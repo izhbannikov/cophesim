@@ -1,0 +1,45 @@
+
+@----------------------------------------------------------@
+|        PLINK!       |     v1.07      |   10/Aug/2009     |
+|----------------------------------------------------------|
+|  (C) 2009 Shaun Purcell, GNU General Public License, v2  |
+|----------------------------------------------------------|
+|  For documentation, citation & bug-report instructions:  |
+|        http://pngu.mgh.harvard.edu/purcell/plink/        |
+@----------------------------------------------------------@
+
+Web-based version check ( --noweb to skip )
+Recent cached web-check found...Problem connecting to web
+
+Writing this text to log file [ sim1.log ]
+Analysis started: Mon Apr 18 11:37:07 2016
+
+Options in effect:
+	--simulate wgas.sim
+	--make-bed
+	--out sim1
+	--simulate-ncases 1000
+	--simulate-ncontrols 1000
+
+Reading simulation parameters from [ wgas.sim ]
+Writing SNP population frequencies to [ sim1.simfreq ]
+Read 2 sets of SNPs, specifying 110 SNPs in total
+Simulating 1000 cases and 1000 controls
+Assuming a disease prevalence of 0.01
+Simulating disease variants (direct association)
+
+Before frequency and genotyping pruning, there are 110 SNPs
+2000 founders and 0 non-founders found
+Total genotyping rate in remaining individuals is 1
+0 SNPs failed missingness test ( GENO > 1 )
+0 SNPs failed frequency test ( MAF < 0 )
+After frequency and genotyping pruning, there are 110 SNPs
+After filtering, 1000 cases, 1000 controls and 0 missing
+After filtering, 0 males, 2000 females, and 0 of unspecified sex
+Writing pedigree information to [ sim1.fam ] 
+Writing map (extended format) information to [ sim1.bim ] 
+Writing genotype bitfile to [ sim1.bed ] 
+Using (default) SNP-major mode
+
+Analysis finished: Mon Apr 18 11:37:07 2016
+

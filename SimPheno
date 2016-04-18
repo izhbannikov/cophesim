@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Usage:
+#   runAnalysisSKAT  tests  input-geno-data-dir  output-dir perm covs strata fn_phenotype fn_pheno_bin fn_pheno_phreg fn_cov
+# where:
+#   tests -- comma-separated list of tests to apply, from CoxSKAT, SKATbin, SKATcont.
+
+SCRIPTDIR=$(readlink -f $(dirname $0))
+
+export R_SCRIPTDIR=$SCRIPTDIR
+export PLINK_GENO=$1
+export PLINK_FREQ=$2
+export PHENO_BIN=$3
+export PHENO_CONT=$4
+export PHENO_COVARIATES=$5
+export NUM_CASES=$6
+export NUM_CONTROLS=$7
+export N_SNP_CASE=$8
+export N_SNP_CONTROL=$9
+export C_BETTA=${10}
+export ALPHA_0=${11}
+
+
+nice RRscript -e  "source(\"$R_SCRIPTDIR/SimPheno.R\")" \
+              -e  "doRun()"
