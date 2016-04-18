@@ -12,7 +12,7 @@ Web-based version check ( --noweb to skip )
 Recent cached web-check found...Problem connecting to web
 
 Writing this text to log file [ sim1.log ]
-Analysis started: Mon Apr 18 11:37:07 2016
+Analysis started: Mon Apr 18 19:54:59 2016
 
 Options in effect:
 	--simulate wgas.sim
@@ -41,5 +41,5 @@ Writing map (extended format) information to [ sim1.bim ]
 Writing genotype bitfile to [ sim1.bed ] 
 Using (default) SNP-major mode
 
-Analysis finished: Mon Apr 18 11:37:07 2016
+Analysis finished: Mon Apr 18 19:54:59 2016
 
