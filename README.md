@@ -50,9 +50,10 @@ cbetta : parameter to calculate betta_i
 
 ## Examples
 
+```
 python cophesim.py -in ~/Projects/cophesim/simulated.test -out ~/Projects/cophesim/test.output -b0 1200
 
 python cophesim.py -in ~/Projects/cophesim/simulated.test -out ~/Projects/cophesim/test.output -b0 1200 -cbetta 0.5
 
 python cophesim.py -in ~/Projects/cophesim/simulated.test -out ~/Projects/cophesim/test.output -b0 1200 -cbetta 0.5 -cov 56.7,1.23
-
+```
