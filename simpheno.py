@@ -3,13 +3,14 @@
 
 from math import *
 from plinkio import plinkfile
+from random import gauss
 
 def beta_p(cbetta, maf):
 	res = cbetta*abs(log10(maf))
 	return res
 
 
-def simContinuousPhe(path, freqpath, b0, cbetta):
+def simContinuousPhe(path, freqpath, b0, cbetta, cov):
 	# Read plink files:
 	plink_file = plinkfile.open( path )
 	if not plink_file.one_locus_per_row( ):
@@ -31,12 +32,20 @@ def simContinuousPhe(path, freqpath, b0, cbetta):
 	
 	# Simulate continuous trait:
 	cont_trait = []
-	for locus, row, sample in zip( locus_list, plink_file, sample_list ):
-		summary_genotype = 0
-		for g,freq in zip(row,frequencies) :
-			summary_genotype += beta_p(cbetta, freq)*float(g)
-		ct = float(b0) + summary_genotype
-		cont_trait.append([sample.fid, sample.iid, ct])
+	if cov != None:
+		for locus, row, sample, c in zip( locus_list, plink_file, sample_list, cov ):
+			summary_genotype = 0
+			for g,freq in zip(row,frequencies) :
+				summary_genotype += beta_p(cbetta, freq)*float(g)
+			ct = float(b0) + summary_genotype + sum(c)
+			cont_trait.append([sample.fid, sample.iid, ct])
+	else :
+		for locus, row, sample in zip( locus_list, plink_file, sample_list ):
+			summary_genotype = 0
+			for g,freq in zip(row,frequencies) :
+				summary_genotype += beta_p(cbetta, freq)*float(g)
+			ct = float(b0) + summary_genotype
+			cont_trait.append([sample.fid, sample.iid, ct])
 	
 	return cont_trait
 
@@ -72,3 +81,19 @@ def getId(path):
 		ids.append([sample.fid, sample.iid])
 	
 	return ids
+	
+def prepareMeanCov(cov):
+	mean_cov = cov.split(',')
+	for i in range(len(mean_cov)):
+		mean_cov[i] = float(mean_cov[i])
+	return mean_cov
+	
+def prepareCovariates(cov, n):
+	covar = []
+	mean_cov = prepareMeanCov(cov)
+	for i in range(n):
+		row = []
+		for m in mean_cov :
+			row.append(gauss(m, sqrt(m/10)))
+		covar.append(row)
+	return covar

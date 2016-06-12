@@ -8,10 +8,12 @@ Simulation script to simulate phenotypes for common and rare variants.
 
 ## Continuous trait
 
-Continuous trait regression: y = b0 + betta1*G1 + betta2*G2 + ... + betta_p*Gp + epsilon
+Continuous trait regression: y = b0 + X1 + X2 + ... + Xi + betta1*G1 + betta2*G2 + ... + betta_p*Gp + epsilon
 
 Where:
 b0 : baseline mean
+
+X1, X2, ..., Xi : covariates (normally-distributed, with mean m and sd = sqrt(m/10))
 
 G1, G2, etc.: values of genetic markers (0, 1, 2) 
 
@@ -52,4 +54,5 @@ python cophesim.py -in ~/Projects/cophesim/simulated.test -out ~/Projects/cophes
 
 python cophesim.py -in ~/Projects/cophesim/simulated.test -out ~/Projects/cophesim/test.output -b0 1200 -cbetta 0.5
 
+python cophesim.py -in ~/Projects/cophesim/simulated.test -out ~/Projects/cophesim/test.output -b0 1200 -cbetta 0.5 -cov 56.7,1.23
 
