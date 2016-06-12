@@ -48,6 +48,8 @@ b0 : baseline mean (for continuous phenotype)
 
 cbetta : parameter to calculate betta_i
 
+cov : mean values of covariates, separated by commas (no spaces!)
+
 ## Examples
 
 ```
