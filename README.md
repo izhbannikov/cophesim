@@ -27,7 +27,7 @@ Directly taken from Plink for now.
 
 ## Output:
 
-pheno_cont.txt, pheno_bin.txt, id.txt and plink files: .bed, .bim, .fam, .simfreq
+<ouput prefix>_pheno_cont.txt, <ouput prefix>_pheno_bin.txt, <ouput prefix>_id.txt <ouput prefix>_covariates.txt, and plink files: .bed, .bim, .fam, .simfreq
 
 ## Usage
 ```
