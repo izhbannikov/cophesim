@@ -9,20 +9,23 @@
 @----------------------------------------------------------@
 
 Web-based version check ( --noweb to skip )
-Recent cached web-check found...Problem connecting to web
+Recent cached web-check found... OK, v1.07 is current
 
-Writing this text to log file [ sim1.log ]
-Analysis started: Mon Apr 18 19:54:59 2016
++++ PLINK 1.9 is now available! See above website for details +++ 
+
+Writing this text to log file [ /Users/ilya/Projects/cophesim/simulated.test.log ]
+Analysis started: Sun Jun 12 21:11:41 2016
 
 Options in effect:
 	--simulate wgas.sim
 	--make-bed
-	--out sim1
+	--out /Users/ilya/Projects/cophesim/simulated.test
 	--simulate-ncases 1000
 	--simulate-ncontrols 1000
 
+** For gPLINK compatibility, do not use '.' in --out **
 Reading simulation parameters from [ wgas.sim ]
-Writing SNP population frequencies to [ sim1.simfreq ]
+Writing SNP population frequencies to [ /Users/ilya/Projects/cophesim/simulated.test.simfreq ]
 Read 2 sets of SNPs, specifying 110 SNPs in total
 Simulating 1000 cases and 1000 controls
 Assuming a disease prevalence of 0.01
@@ -36,10 +39,10 @@ Total genotyping rate in remaining individuals is 1
 After frequency and genotyping pruning, there are 110 SNPs
 After filtering, 1000 cases, 1000 controls and 0 missing
 After filtering, 0 males, 2000 females, and 0 of unspecified sex
-Writing pedigree information to [ sim1.fam ] 
-Writing map (extended format) information to [ sim1.bim ] 
-Writing genotype bitfile to [ sim1.bed ] 
+Writing pedigree information to [ /Users/ilya/Projects/cophesim/simulated.test.fam ] 
+Writing map (extended format) information to [ /Users/ilya/Projects/cophesim/simulated.test.bim ] 
+Writing genotype bitfile to [ /Users/ilya/Projects/cophesim/simulated.test.bed ] 
 Using (default) SNP-major mode
 
-Analysis finished: Mon Apr 18 19:54:59 2016
+Analysis finished: Sun Jun 12 21:11:42 2016
 

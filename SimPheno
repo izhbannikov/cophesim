@@ -21,5 +21,5 @@ export C_BETTA=${10}
 export ALPHA_0=${11}
 
 
-nice RRscript -e  "source(\"$R_SCRIPTDIR/SimPheno.R\")" \
+nice Rscript -e  "source(\"$R_SCRIPTDIR/SimPheno.R\")" \
               -e  "doRun()"
