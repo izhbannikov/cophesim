@@ -29,7 +29,7 @@ pheno_cont.txt, pheno_bin.txt, id.txt and plink files: .bed, .bim, .fam, .simfre
 
 ## Usage
 ```
-python cophesim.py <path to plink files> <ouput prefix> [other parameters]
+python cophesim.py -in <path to plink files with file prefix> -out <ouput prefix> [other parameters]
 ```
 
 ###Other parameters:
