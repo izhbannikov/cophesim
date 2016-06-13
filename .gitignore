@@ -6,3 +6,4 @@
 *.fam
 *.log
 *.simfreq
+.DS_Store
