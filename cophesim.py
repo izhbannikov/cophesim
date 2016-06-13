@@ -37,8 +37,8 @@ def main() :
 	
 	# Simulation genotypes with Plink.
 	# For help visit: http://pngu.mgh.harvard.edu/~purcell/plink/simulate.shtml
-	preparePlink(args.snp_null, args.snp_disease)
-	runPlinkSimulation(args.plink_path, args.ncase, args.ncontrol)
+	preparePlink(args.snp_null, args.snp_disease, args.output_prefix)
+	runPlinkSimulation(args.output_prefix, args.ncase, args.ncontrol)
 	
 	print "Running SimPheno"
 	

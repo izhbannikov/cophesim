@@ -7,3 +7,7 @@
 *.log
 *.simfreq
 .DS_Store
+*pheno_bin.txt
+*pheno_cont.txt
+*covariates.txt
+*id.txt
