@@ -9,12 +9,12 @@
 @----------------------------------------------------------@
 
 Web-based version check ( --noweb to skip )
-Recent cached web-check found... OK, v1.07 is current
+Connecting to web...  OK, v1.07 is current
 
 +++ PLINK 1.9 is now available! See above website for details +++ 
 
 Writing this text to log file [ /Users/ilya/Projects/cophesim/simulated.test.log ]
-Analysis started: Sun Jun 12 22:22:50 2016
+Analysis started: Mon Jun 13 12:49:49 2016
 
 Options in effect:
 	--simulate wgas.sim
@@ -44,5 +44,5 @@ Writing map (extended format) information to [ /Users/ilya/Projects/cophesim/sim
 Writing genotype bitfile to [ /Users/ilya/Projects/cophesim/simulated.test.bed ] 
 Using (default) SNP-major mode
 
-Analysis finished: Sun Jun 12 22:22:50 2016
+Analysis finished: Mon Jun 13 12:49:49 2016
 

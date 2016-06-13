@@ -37,14 +37,14 @@ def simContinuousPhe(path, freqpath, b0, cbetta, cov):
 			summary_genotype = 0
 			for g,freq in zip(row,frequencies) :
 				summary_genotype += beta_p(cbetta, freq)*float(g)
-			ct = float(b0) + summary_genotype + sum(c)
+			ct = float(b0) + summary_genotype + sum(c) + gauss(1, 0)
 			cont_trait.append([sample.fid, sample.iid, ct])
 	else :
 		for locus, row, sample in zip( locus_list, plink_file, sample_list ):
 			summary_genotype = 0
 			for g,freq in zip(row,frequencies) :
 				summary_genotype += beta_p(cbetta, freq)*float(g)
-			ct = float(b0) + summary_genotype
+			ct = float(b0) + summary_genotype + gauss(1, 0)
 			cont_trait.append([sample.fid, sample.iid, ct])
 	
 	return cont_trait
