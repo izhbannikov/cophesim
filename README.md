@@ -31,7 +31,7 @@ Directly taken from Plink for now.
 
 ## Usage
 ```
-python cophesim.py -in <path to plink files with file prefix> -out <ouput prefix> [other parameters]
+python cophesim.py -out <ouput prefix> [other parameters]
 ```
 
 ###Other parameters:
@@ -53,9 +53,9 @@ cov : mean values of covariates, separated by commas (no spaces!)
 ## Examples
 
 ```
-python cophesim.py -in ~/Projects/cophesim/simulated.test -out ~/Projects/cophesim/test.output -b0 1200
+python cophesim.py -out ~/Projects/cophesim/test.output -b0 1200
 
-python cophesim.py -in ~/Projects/cophesim/simulated.test -out ~/Projects/cophesim/test.output -b0 1200 -cbetta 0.5
+python cophesim.py -out ~/Projects/cophesim/test.output -b0 1200 -cbetta 0.5
 
-python cophesim.py -in ~/Projects/cophesim/simulated.test -out ~/Projects/cophesim/test.output -b0 1200 -cbetta 0.5 -cov 56.7,1.23
+python cophesim.py -out ~/Projects/cophesim/test.output -b0 1200 -cbetta 0.5 -cov 56.7,1.23
 ```

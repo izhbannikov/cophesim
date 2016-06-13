@@ -20,7 +20,7 @@ def main() :
 	# Setting-up options for option parser:
 	usage = "cophesim.py -in <path to plink files> -out <output prefix> [other options]"
 	parser = argparse.ArgumentParser(usage=usage)
-	parser.add_argument("-in", "--input", action="store", type=str, dest="plink_path", default=None, required=True, help="Path to plink files")
+	#parser.add_argument("-in", "--input", action="store", type=str, dest="plink_path", default=None, required=True, help="Path to plink files")
 	parser.add_argument("-out", "--output", action="store", type=str, dest="output_prefix", default=None, required=True, help="Output prefix")
 	parser.add_argument("-ncase", "--ncase",action="store", type=int, dest="ncase", default=1000, required=False, help="Number of cases") 
 	parser.add_argument("-ncont", "--ncont",action="store", type=int, dest="ncontrol", default=1000, required=False, help="Number of controls") 
@@ -42,15 +42,16 @@ def main() :
 	
 	print "Running SimPheno"
 	
-	dich_trait = simDichotomousPhe(args.plink_path)
-	ids = getId(args.plink_path)	
+	dich_trait = simDichotomousPhe(args.output_prefix)
+	ids = getId(args.output_prefix)	
+	
 	if args.cov != None :
 		covariates = prepareCovariates(args.cov, args.ncase+args.ncontrol)
-		cont_trait = simContinuousPhe(args.plink_path, args.plink_path + ".simfreq", args.baseline_mean, args.cbetta, covariates)
+		cont_trait = simContinuousPhe(args.output_prefix, args.output_prefix + ".simfreq", args.baseline_mean, args.cbetta, covariates)
 		print "Saving results..."
 		saveData(cont_trait, dich_trait, ids, args.output_prefix, covariates)
 	else :
-		cont_trait = simContinuousPhe(args.plink_path, args.plink_path + ".simfreq", args.baseline_mean, args.cbetta, None)
+		cont_trait = simContinuousPhe(args.output_prefix, args.output_prefix + ".simfreq", args.baseline_mean, args.cbetta, None)
 		print "Saving results..."
 		saveData(cont_trait, dich_trait, ids, args.output_prefix, None)
 
