@@ -8,9 +8,9 @@ Performs several tasks with plink, such as quality control, select snps, etc.
 
 import subprocess
 
-def preparePlink(snpnull, snpdisease, output_prefix):
+def preparePlink(snpnull, snpdisease, path):
 	#print "Making wgas.sim configuration file..."
-	f = open(output_prefix + "_wgas.sim",'w')
+	f = open(path + "_wgas.sim",'w')
 	f.write("{} null 0.00 1.00 1.00 1.00\n".format(snpnull))
 	f.write("{} disease 0.00 1.00 2.00 mult\n".format(snpdisease))
 	f.close()
