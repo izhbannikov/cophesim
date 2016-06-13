@@ -1,7 +1,7 @@
 #!/usr/bin/env vpython
 #   -*- coding: utf-8 -*-
 
-from math import log10
+from math import log10, sqrt
 from plinkio import plinkfile
 from random import gauss
 
