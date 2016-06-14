@@ -29,6 +29,7 @@ def main() :
 	parser.add_argument("-cbetta", "--cbetta",action="store", type=float, dest="cbetta", default=0.2, required=False, help="Phenotype")
 	parser.add_argument("-b0", "--baseline_mean",action="store", type=float, dest="baseline_mean", default="80", required=False, help="Baseline mean for continuous phenotype")
 	parser.add_argument("-cov", "--covariates", action="store", type=str, dest="cov", default=None, required=False, help="Mean values of covariates, must be enumerated with comma and no spaces")
+	parser.add_argument("-surv", "--suvival", action="store", type=str, dest="surv_beta", default=None, required=False, help="Bettas for survival")
 	
 	args = parser.parse_args()
 	#-------------------------#
@@ -48,6 +49,9 @@ def main() :
 	if args.cov != None :
 		covariates = prepareCovariates(args.cov, args.ncase+args.ncontrol)
 		cont_trait = simContinuousPhe(args.output_prefix, args.output_prefix + ".simfreq", args.baseline_mean, args.cbetta, covariates)
+		if args.surv_beta != None :
+			survival_trait = simSurvPhe(0.01, 1, -0.6, 0.0125, covariates, surv_beta)
+			print survival_trait
 		print "Saving results..."
 		saveData(cont_trait, dich_trait, ids, args.output_prefix, covariates)
 	else :

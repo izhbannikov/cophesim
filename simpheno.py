@@ -1,9 +1,9 @@
 #!/usr/bin/env vpython
 #   -*- coding: utf-8 -*-
 
-from math import log10, sqrt
+from math import log10, sqrt, log, exp
 from plinkio import plinkfile
-from random import gauss
+from random import gauss, uniform, expovariate
 
 def beta_p(cbetta, maf):
 	res = cbetta*abs(log10(maf))
@@ -97,3 +97,31 @@ def prepareCovariates(cov, n):
 			row.append(gauss(m, sqrt(m/10)))
 		covar.append(row)
 	return covar
+	
+# lamb = scale parameter in h0()
+# rho = shape parameter in h0()
+# beta = fixed effect parameter
+# rateC = rate parameter of the exponential distribution of C
+def simulWeib(lambd, rho, beta, rateC, covar, betas):
+  # Weibull latent event times
+  v = uniform(0,1)
+  cb = 0
+  for c, b in zip(covar, betas) :
+  	 cb += c*b
+  #print cb
+  Tlat = pow((- log(v) / (lambd * exp(cb))),(1/rho))
+  #print Tlat
+  # censoring times
+  C = expovariate(rateC)
+  #print C
+  # follow-up times and event indicators
+  time = min(Tlat, C)
+  status = 1 if Tlat <= C else 0
+  return [time, status]
+  
+def simSurvPhe(lambd, rho, beta, rateC, covariates, betas) :
+	result = []
+	for c in covariates :
+		result.append(simulWeib(lambd, rho, beta, rateC, c, betas))
+	
+	return result
