@@ -20,8 +20,8 @@ def runPlinkSimulation(path, ncases, ncontrols) :
 	#plink --simulate wgas.sim --make-bed --out sim1 --simulate-ncases $N_cases --simulate-ncontrols $N_controls
 	subprocess.call(["plink", "--simulate", path+"_wgas.sim", "--make-bed", "--out", path, "--simulate-ncases", str(ncases), "--simulate-ncontrols", str(ncontrols)])
 
-def runPlink(path, phenotype, output_prefix) :
-	subprocess.call(["plink", "--noweb", "--bfile", path, "--pheno", phenotype, "--1", "--make-bed", "--out", output_prefix])
+#def runPlink(path, phenotype, output_prefix) :
+#	subprocess.call(["plink", "--noweb", "--bfile", path, "--pheno", phenotype, "--1", "--make-bed", "--tped", "--out", output_prefix])
 	
 def plinkQC(bfile, selected_snps, individuals, outpath) :
 	qc = "--mind 0.05 --hwe 0.001 --maf 0.05 --geno 0.05"

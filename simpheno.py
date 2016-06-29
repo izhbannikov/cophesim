@@ -8,7 +8,70 @@ from random import gauss, uniform, expovariate
 def beta_p(cbetta, maf):
 	res = cbetta*abs(log10(maf))
 	return res
+	
+def prepareMatrix( plink_file ):
+	matrix = []
+	for row in plink_file:
+		for i in range(len(row)):
+			matrix.append([])
+		break
+	
+	for row in plink_file:
+		for i in range(len(row)):
+			matrix[i].append(row[i])
+	return matrix
 
+def simDichotomousPhe(path, freqpath, b0, cbetta, cov, p0) :
+	# Read plink files:
+	plink_file = plinkfile.open( path )
+	if not plink_file.one_locus_per_row( ):
+		print( "This script requires that snps are rows and samples columns." )
+		exit( 1 )
+		
+	sample_list = plink_file.get_samples( )
+	locus_list = plink_file.get_loci( )
+	
+	# Reading allele frequencies:
+	f = open(freqpath, "rU")
+	freq_lines = f.readlines()
+	f.close()
+	frequencies = []
+	for line in freq_lines:
+		if len(line.strip()) != 0:
+			frequencies.append(float(line.split('\t')[1].split(' ')[0]))
+	
+	
+	# Simulate binary (dichotomous) trait:
+	bin_trait = []
+	matrix = prepareMatrix(plink_file)
+	if cov != None:
+		for row, sample, c in zip(matrix, sample_list, cov ):
+			summary_genotype = 0
+			for g,freq in zip(row,frequencies) :
+				summary_genotype += beta_p(cbetta, freq)*float(g)
+				for cc in c :
+					csum = beta_p(cbetta, freq)*cc
+				summary_genotype += csum
+			z = float(b0) + summary_genotype + gauss(1, 0)
+			#z = float(b0) + summary_genotype + sum(c) + gauss(1, 0)
+			pr = 1/(1+exp(-z))
+			bt = 1 if pr > p0 else 0
+			#print pr, z, bt
+			bin_trait.append([sample.fid, sample.iid, bt])
+		#print len(plink_file)
+		
+	else :
+		for row, sample in zip(matrix, sample_list ):
+			summary_genotype = 0
+			for g,freq in zip(row,frequencies) :
+				summary_genotype += beta_p(cbetta, freq)*float(g)
+			z = float(b0) + summary_genotype + gauss(1, 0)
+			pr = 1/(1+exp(-z))
+			bt = 1 if pr > p0 else 0
+			print pr, z, bt
+			bin_trait.append([sample.fid, sample.iid, bt])
+	
+	return bin_trait
 
 def simContinuousPhe(path, freqpath, b0, cbetta, cov):
 	# Read plink files:
@@ -32,15 +95,16 @@ def simContinuousPhe(path, freqpath, b0, cbetta, cov):
 	
 	# Simulate continuous trait:
 	cont_trait = []
+	matrix = prepareMatrix(plink_file)
 	if cov != None:
-		for locus, row, sample, c in zip( locus_list, plink_file, sample_list, cov ):
+		for row, sample, c in zip( matrix, sample_list, cov ):
 			summary_genotype = 0
 			for g,freq in zip(row,frequencies) :
 				summary_genotype += beta_p(cbetta, freq)*float(g)
 			ct = float(b0) + summary_genotype + sum(c) + gauss(1, 0)
 			cont_trait.append([sample.fid, sample.iid, ct])
 	else :
-		for locus, row, sample in zip( locus_list, plink_file, sample_list ):
+		for row, sample in zip( matrix, sample_list ):
 			summary_genotype = 0
 			for g,freq in zip(row,frequencies) :
 				summary_genotype += beta_p(cbetta, freq)*float(g)
@@ -49,7 +113,7 @@ def simContinuousPhe(path, freqpath, b0, cbetta, cov):
 	
 	return cont_trait
 
-def simDichotomousPhe(path):
+def getDichotomousPhePlink(path):
 	# Read plink files:
 	plink_file = plinkfile.open( path )
 	if not plink_file.one_locus_per_row( ):

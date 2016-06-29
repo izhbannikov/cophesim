@@ -1,5 +1,6 @@
+cophesim 1.1.2
 Simulation script to simulate phenotypes for common and rare variants.
-© Ilya Y. Zhbannikov, 2016-06-12
+© Ilya Y. Zhbannikov, 2016-06-29
 
 ##Requirements:
 1. Python 2.7
