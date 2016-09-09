@@ -1,0 +1,1 @@
+python cophesim.py -i ../cophesim_test/sim1 -o ../cophesim_test/out

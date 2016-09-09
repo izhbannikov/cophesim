@@ -16,57 +16,78 @@ from utils import *
 
 # Starts the simulation
 def main() :
-	
-	# Setting-up options for option parser:
-	usage = "cophesim.py -in <path to plink files> -out <output prefix> [other options]"
+
+	#------------Setting-up options for argument parser -------------#
+	usage = "cophesim.py -i <path to plink files> -o <output prefix> [other options]"
 	parser = argparse.ArgumentParser(usage=usage)
-	parser.add_argument("-out", "--output", action="store", type=str, dest="output_prefix", default=None, required=True, help="Output prefix")
-	parser.add_argument("-ncase", "--ncase",action="store", type=int, dest="ncase", default=1000, required=False, help="Number of cases") 
-	parser.add_argument("-ncont", "--ncont",action="store", type=int, dest="ncontrol", default=1000, required=False, help="Number of controls") 
-	parser.add_argument("-snpn", "--snpn",action="store", dest="snp_null", default=100, required=False, help="Number of null SNPs") 
-	parser.add_argument("-snpd", "--snpd",action="store", type=int, dest="snp_disease", default="10", required=False, help="Number of disease SNPs")
+	
+	# Input parameters
+	parser.add_argument("-i", "--input", action="store", type=str, dest="idata", default=None, required=True, help="Path to input files")
+	parser.add_argument("-o", "--output", action="store", type=str, dest="output_prefix", default=None, required=True, help="Output prefix")
+	
+	# Trait (outcome) type
+	parser.add_argument("-d", "--dichotomous",action="store_true", dest="dflag", default=True, required=False, help="A flag for dichotomous phenotype, True by default.")
+	parser.add_argument("-c", "--continuous",action="store_true", dest="cflag", default=False, required=False, help="A flag for continous phenotype, False by default.")
+	parser.add_argument("-s", "--suvival", action="store_true", dest="sflag", default=False, required=False, help="A flag to simulate survival phenotype, False by default.")
+	
+	# Other parameters
 	parser.add_argument("-cbetta", "--cbetta",action="store", type=float, dest="cbetta", default=0.2, required=False, help="Phenotype")
 	parser.add_argument("-b0", "--baseline_mean",action="store", type=float, dest="baseline_mean", default="80", required=False, help="Baseline mean for continuous phenotype")
 	parser.add_argument("-cov", "--covariates", action="store", type=str, dest="cov", default=None, required=False, help="Mean values of covariates, must be enumerated with comma and no spaces")
-	parser.add_argument("-surv", "--suvival", action="store", type=str, dest="surv_beta", default=None, required=False, help="Bettas for survival")
 	parser.add_argument("-p0", "--p0",action="store", type=float, dest="p0", default=0.5, required=False, help="Probability for logistic model.")
+	parser.add_argument("-weib", action="store_true", dest="weib", default=True, required=False, help="A flag to use Weibull distribution for survival phenotype. True by default.")
+	parser.add_argument("-gomp", action="store_true", dest="gomp", default=False, required=False, help="A flag to use Gompertz distribution for survival phenotype. False by default.")
 	
+	
+	#--------- Checking the input arguments ----------#
 	args = parser.parse_args()
-	#-------------------------#
+	
+	if not os.path.exists(os.path.dirname(args.idata)):
+		print "Directory", args.indata, "not exists. Aborting."
+		sys.exit(-1)
 	
 	if not os.path.exists(os.path.dirname(args.output_prefix)):
 		print "Directory", args.output_prefix, "not exists and will be created."
 		os.makedirs(os.path.dirname(args.output_prefix))
 	
 	
-	# Simulation genotypes with Plink.
-	# For help visit: http://pngu.mgh.harvard.edu/~purcell/plink/simulate.shtml
-	preparePlink(args.snp_null, args.snp_disease, args.output_prefix) # Need to make a class for these two commands
-	runPlinkSimulation(args.output_prefix, args.ncase, args.ncontrol) # Also this code can
+	#---------- Simulation ---------------#
 	
 	print "Running SimPheno..."
 	covariates = None
 	if args.cov != None :
-		covariates = prepareCovariates(args.cov, args.ncase+args.ncontrol)
+		covariates = prepareCovariates(args.cov)
 		
+	dich_trait = None
+	cont_trait = None
+	surv_trait = None
 	
-	## All functions below need to call from a particular class:
-	# Simulate dichotomous (binary, quantitative) trait:
-	dich_trait = simDichotomousPhe(args.output_prefix, args.output_prefix + ".simfreq", args.baseline_mean, args.cbetta, covariates, args.p0)
+	## All functions below need to call from a particular class (class factory)
 	
 	# Get id of each individual:
-	ids = getId(args.output_prefix)	
+	ids = getId(args.idata)	
 	
-	# Simulate continuous (qualitative) trait:
-	cont_trait = simContinuousPhe(args.output_prefix, args.output_prefix + ".simfreq", args.baseline_mean, args.cbetta, covariates)
+	if args.dflag :
+		# Simulate dichotomous (binary) trait
+		dich_trait = simDichotomousPhe(args.idata, args.output_prefix, args.baseline_mean, 0.2, covariates, args.p0)
 	
-	# This function is currently under test:
-	if args.surv_beta != None and args.cov != None :
-		survival_trait = simSurvPhe(0.01, 1, -0.6, 0.0125, covariates, surv_beta)
+	if args.cflag :
+		# Simulate continuous (qualitative) trait
+		cont_trait = simContinuousPhe(args.idata, args.output_prefix, args.baseline_mean, 0.2, covariates)
+	
+	if args.sflag :
+		# Simulate survival trait
+		if args.weib :
+			surv_trait = simulWeib(args.idata, args.output_prefix, args.baseline_mean, 0.2, covariates, 7e-8, 1, 0.01)
+		if args.gomp :
+			surv_trait = simulGomp(args.idata, args.output_prefix, args.baseline_mean, 0.2, covariates, 7e-8, 1, 0.01)
+	
 	
 	print "Saving results..."	
-	saveData(cont_trait, dich_trait, ids, args.output_prefix, covariates)
-
+	
+	saveData(dich_trait, cont_trait, surv_trait, ids, args.output_prefix, covariates)
+	
+	
 	print "Done!"
 
 
