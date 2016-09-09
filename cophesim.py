@@ -30,6 +30,9 @@ def main() :
 	parser.add_argument("-c", "--continuous",action="store_true", dest="cflag", default=False, required=False, help="A flag for continous phenotype, False by default.")
 	parser.add_argument("-s", "--suvival", action="store_true", dest="sflag", default=False, required=False, help="A flag to simulate survival phenotype, False by default.")
 	
+	# Effects from causal SNPs
+	parser.add_argument("-ce", action="store", dest="ceff", default=None, required=False, help="A path to the file with effect of each causal SNP. Must be in format: snp_name:effect.")
+	
 	# Other parameters
 	parser.add_argument("-cbetta", "--cbetta",action="store", type=float, dest="cbetta", default=0.2, required=False, help="Phenotype")
 	parser.add_argument("-b0", "--baseline_mean",action="store", type=float, dest="baseline_mean", default="80", required=False, help="Baseline mean for continuous phenotype")
@@ -64,23 +67,29 @@ def main() :
 	
 	## All functions below need to call from a particular class (class factory)
 	
-	# Get id of each individual:
-	ids = getId(args.idata)	
+	sim = Simpheno()
+	
+	# Prepare SNP effects from file
+	if args.ceff != None :
+		sim.prepareCE(args.idata, args.ceff)
+	
+	# Get id of each individual
+	ids = sim.getId(args.idata)
 	
 	if args.dflag :
 		# Simulate dichotomous (binary) trait
-		dich_trait = simDichotomousPhe(args.idata, args.output_prefix, args.baseline_mean, 0.2, covariates, args.p0)
+		dich_trait = sim.simDichotomousPhe(args.idata, covariates, args.p0)
 	
 	if args.cflag :
 		# Simulate continuous (qualitative) trait
-		cont_trait = simContinuousPhe(args.idata, args.output_prefix, args.baseline_mean, 0.2, covariates)
+		cont_trait = sim.simContinuousPhe(args.idata, covariates)
 	
 	if args.sflag :
 		# Simulate survival trait
 		if args.weib :
-			surv_trait = simulWeib(args.idata, args.output_prefix, args.baseline_mean, 0.2, covariates, 7e-8, 1, 0.01)
+			surv_trait = sim.simulWeib(args.idata, covariates, 7e-8, 1, 0.01)
 		if args.gomp :
-			surv_trait = simulGomp(args.idata, args.output_prefix, args.baseline_mean, 0.2, covariates, 7e-8, 1, 0.01)
+			surv_trait = sim.simulGomp(args.idata, covariates, 7e-8, 1, 0.01)
 	
 	
 	print "Saving results..."	
