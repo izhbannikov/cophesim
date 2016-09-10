@@ -11,15 +11,27 @@ class Simpheno:
 	alpha = 0.2138
 	snpeff = dict()
 	
+	# Lists to save the results
+	dtrait = None
+	ctrait = None
+	strait = None
+	indiv_id = None
+	
+	datapath = None
+	cefile = None
+	output_prefix = None
+	
 	def __init__(self, h=0.8, alpha=0.2138):
 		self.h = h
 		self.alpha = alpha
 		self.description = "This shape has not been described yet"
 		self.author = "Ilya Y. Zhbannikov"
-		
-	def prepareCE(self, path, cefile):
+	
+	#----------------- Methods ------------------#
+	
+	def prepareCE(self):
 		""" Prepares a list of effects from causal SNPs """
-		plink_file = plinkfile.open( path )
+		plink_file = plinkfile.open( self.datapath )
 		if not plink_file.one_locus_per_row( ):
 			print( "This script requires that snps are rows and samples columns." )
 			exit( 1 )
@@ -27,7 +39,7 @@ class Simpheno:
 		eff = dict()
 		
 		# Read cefile
-		f = open(cefile)
+		f = open(self.cefile)
 		lines = f.readlines()
 		f.close()
 		
@@ -83,9 +95,9 @@ class Simpheno:
 	
 		return freq
 		
-	def getId(self, path):
+	def getId(self):
 		# Read plink files:
-		plink_file = plinkfile.open( path )
+		plink_file = plinkfile.open( self.datapath )
 		if not plink_file.one_locus_per_row( ):
 			print( "This script requires that snps are rows and samples columns." )
 			exit( 1 )
@@ -97,11 +109,11 @@ class Simpheno:
 			#print sample.fid, sample.iid, sample.phenotype
 			ids.append([sample.fid, sample.iid])
 	
-		return ids
+		self.indiv_id = ids
 
-	def simDichotomousPhe(self, idata, cov, p0) :
+	def simDichotomousPhe(self, cov, p0) :
 		# Read plink files:
-		plink_file = plinkfile.open( idata )
+		plink_file = plinkfile.open( self.datapath )
 		if not plink_file.one_locus_per_row( ):
 			print( "This script requires that snps are rows and samples columns." )
 			exit( 1 )
@@ -135,10 +147,10 @@ class Simpheno:
 				
 				bin_trait.append([sample.fid, sample.iid, bt])
 	
-		return bin_trait
+		self.dtrait = bin_trait
 
-	def simContinuousPhe(self, idata, cov):
-		plink_file = plinkfile.open( idata )
+	def simContinuousPhe(self, cov):
+		plink_file = plinkfile.open( self.datapath )
 		if not plink_file.one_locus_per_row( ):
 			print( "This script requires that snps are rows and samples columns." )
 			exit( 1 )
@@ -168,7 +180,7 @@ class Simpheno:
 				
 				cont_trait.append([sample.fid, sample.iid, z])
 			
-		return cont_trait
+		self.ctrait = cont_trait
 
 	
 	def prepareCovariates(cov):
@@ -184,8 +196,8 @@ class Simpheno:
 	# lamb = scale parameter in h0()
 	# rho = shape parameter in h0()
 	# rateC = rate parameter of the exponential distribution of C
-	def simulWeib(self, idata, cov, lambd, rho, rateC):
-		plink_file = plinkfile.open( idata )
+	def simulWeib(self, cov, lambd, rho, rateC):
+		plink_file = plinkfile.open( self.datapath )
 		if not plink_file.one_locus_per_row( ):
 			print( "This script requires that snps are rows and samples columns." )
 			exit( 1 )
@@ -220,14 +232,14 @@ class Simpheno:
   			status = 1 if Tlat >= C else 0
   			surv_trait.append([time, status])
   		
-  		return surv_trait
+  		self.strait = surv_trait
   	
   	
 	# lamb = scale parameter in h0()
 	# rho = shape parameter in h0()
 	# rateC = rate parameter of the exponential distribution of C
-	def simulGomp(self, idata, cov, lambd, rho, rateC):
-		plink_file = plinkfile.open( idata )
+	def simulGomp(self, cov, lambd, rho, rateC):
+		plink_file = plinkfile.open( self.datapath )
 		if not plink_file.one_locus_per_row( ):
 			print( "This script requires that snps are rows and samples columns." )
 			exit( 1 )
@@ -262,4 +274,56 @@ class Simpheno:
   			status = 1 if Tlat >= C else 0
   			surv_trait.append([time, status])
   		
-  		return surv_trait
+  		self.strait = surv_trait
+  		
+	def prepare(self, path, cefile, outprefix) :
+		self.datapath = path
+		self.cefile = cefile
+		self.output_prefix = outprefix
+		
+		# Prepare SNP effects from file
+		if self.cefile != None :
+			self.prepareCE()
+	
+		# Get id of each individual
+		self.getId()
+		
+	def saveData(self):
+	
+		if self.dtrait != None :
+			# Saving dichotomous phenotype:
+			f = open(self.output_prefix + "_pheno_bin.txt", "w")
+			for d in self.dtrait :
+				f.write('\t'.join(map(str,d)))
+				f.write('\n')
+			f.close()
+	
+		if self.ctrait != None :
+			# Saving continuous phenotype:
+			f = open(self.output_prefix + "_pheno_cont.txt", "w")
+			for c in self.ctrait :
+				f.write('\t'.join(map(str,c)))
+				f.write('\n')
+			f.close()
+	
+	
+	
+		if self.indiv_id != None :
+			# Saving fid and id:
+			f = open(self.output_prefix + "_id.txt", "w")
+			for i in self.indiv_id :
+				f.write('\t'.join(map(str,i)))
+				f.write('\n')
+			f.close()
+	
+		# Saving covariates:
+		#if covariates != None :
+		#	f = open(output_prefix + "_covariates.txt", "w")
+		#	for i, c in zip(ids, covariates) :
+		#		row = list(chain.from_iterable([i, c]))
+		#		f.write('\t'.join(map(str,row)))
+		#		f.write('\n')
+		#	
+		#	f.close()
+		
+	

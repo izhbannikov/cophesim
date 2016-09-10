@@ -61,41 +61,31 @@ def main() :
 	if args.cov != None :
 		covariates = prepareCovariates(args.cov)
 		
-	dich_trait = None
-	cont_trait = None
-	surv_trait = None
-	
 	## All functions below need to call from a particular class (class factory)
-	
+
+	# Instantiation of the Simpheno class
 	sim = Simpheno()
 	
-	# Prepare SNP effects from file
-	if args.ceff != None :
-		sim.prepareCE(args.idata, args.ceff)
-	
-	# Get id of each individual
-	ids = sim.getId(args.idata)
+	sim.prepare(args.idata, args.ceff, args.output_prefix)
 	
 	if args.dflag :
 		# Simulate dichotomous (binary) trait
-		dich_trait = sim.simDichotomousPhe(args.idata, covariates, args.p0)
+		sim.simDichotomousPhe(covariates, args.p0)
 	
 	if args.cflag :
 		# Simulate continuous (qualitative) trait
-		cont_trait = sim.simContinuousPhe(args.idata, covariates)
+		sim.simContinuousPhe(covariates)
 	
 	if args.sflag :
 		# Simulate survival trait
 		if args.weib :
-			surv_trait = sim.simulWeib(args.idata, covariates, 7e-8, 1, 0.01)
+			sim.simulWeib(covariates, 7e-8, 1, 0.01)
 		if args.gomp :
-			surv_trait = sim.simulGomp(args.idata, covariates, 7e-8, 1, 0.01)
+			sim.simulGomp(covariates, 7e-8, 1, 0.01)
 	
 	
 	print "Saving results..."	
-	
-	saveData(dich_trait, cont_trait, surv_trait, ids, args.output_prefix, covariates)
-	
+	sim.saveData()
 	
 	print "Done!"
 
