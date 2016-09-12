@@ -1,3 +1,5 @@
-python cophesim.py -i ../cophesim_test/sim1 -o ../cophesim_test/out
+python cophesim.py -i ../cophesim_test/sim1 -o ../cophesim_test/out -d
 
 python cophesim.py -i ../cophesim_test/sim1 -o ../cophesim_test/out -c
+
+python cophesim.py -i ../cophesim_test/sim1 -o ../cophesim_test/out -s
