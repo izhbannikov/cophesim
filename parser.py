@@ -3,10 +3,51 @@
 
 from itertools import chain
 import re
+from plinkio import plinkfile
 
-class Parser :
+"""
+class Adapter :
+	# Adapter for different types of input data
+	plinkParser = Parser()
+	msParser = Parser()
+	genomeParser = Parser()
+	
+	def parse() :
+		# Parses input file depenting on their types
+		
+	
+	def getData() :
+		# Returns genotype matrix
+		gmatrix = []
+		return gmatrix
+"""
 
-	def parse_ms(fname,diploid=0):
+class Parser() :
+
+	def __init__(self):
+		pass
+	
+
+	def parse_plink(self, fname) :
+		""" For parsing Plink-line files """
+		matrix = []
+		plink_file = plinkfile.open( fname )
+		if not plink_file.one_locus_per_row( ):
+			print( "This script requires that snps are rows and samples columns." )
+			exit( 1 )
+			
+		for row in plink_file:
+			for i in range(len(row)):
+				matrix.append([])
+			break
+	
+		for row in plink_file:
+			for i in range(len(row)):
+				matrix[i].append(row[i])
+		
+		return matrix
+
+	def parse_ms(self, fname,diploid=0):
 		""" For parsing ms, msms and msHot output """
 		f=open(fname)
 		s=f.read()
@@ -20,7 +61,7 @@ class Parser :
 
 		for sim in simulations:
 			simlines=sim.split('\n')
-			genotypes,positions,raw=parse_ms_simwise(simlines,diploid)
+			genotypes,positions,raw=self.parse_ms_simwise(simlines,diploid)
 			positions_all.append(positions)
 			genotypes_all.append(genotypes)
 			raw_all.append(raw)
@@ -29,7 +70,7 @@ class Parser :
 
 
 
-	def parse_ms_simwise(lines,diploid=0):
+	def parse_ms_simwise(self, lines,diploid=0):
 		positions=[]
 		genotypes=[]
 
@@ -53,14 +94,13 @@ class Parser :
 
 		return genotypes,positions,raw_genotypes
 
-
-	def parse_genome(fname,diploid=0):
+	
+	def parse_genome(self, fname,diploid=0):
 		""" Parses GENOME output """
-		
 		f=open(fname)
 		s=f.read()
 		f.close()
-
+		
 		positions_all=[]
 		genotypes_all=[]
 		raw_all=[]
@@ -69,15 +109,14 @@ class Parser :
 
 		for sim in simulations:
 			simlines=sim.split('\n')
-			genotypes,positions,raw=parse_genome_simwise(simlines,diploid)
+			genotypes,positions,raw=self.parse_genome_simwise(simlines,diploid)
 			positions_all.append(positions)
 			genotypes_all.append(genotypes)
 			raw_all.append(raw)
 
 		return genotypes_all,positions_all,raw_all
-	
-
-	def parse_genome_simwise(lines,diploid=0):
+		
+	def parse_genome_simwise(self, lines,diploid=0):
 
 		positions=[]
 		genotypes=[]
@@ -111,3 +150,8 @@ class Parser :
 
 
 		return genotypes,positions,raw_genotypes
+
+
+	
+
+	

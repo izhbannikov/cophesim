@@ -4,12 +4,15 @@
 from math import log10, sqrt, log, exp
 from plinkio import plinkfile
 from random import gauss, uniform, expovariate
+from exceptions import *
+from parser import *
 
-class Simpheno:
+class Simpheno():
 	
 	h = 0.8
 	alpha = 0.2138
 	snpeff = dict()
+	inType = "plink"
 	
 	# Lists to save the results
 	dtrait = None
@@ -21,11 +24,15 @@ class Simpheno:
 	cefile = None
 	output_prefix = None
 	
-	def __init__(self, h=0.8, alpha=0.2138):
+	genoMatrix = None
+	
+	def __init__(self, h=0.8, alpha=0.2138, intype="plink"):
 		self.h = h
 		self.alpha = alpha
 		self.description = "This shape has not been described yet"
 		self.author = "Ilya Y. Zhbannikov"
+		print intype
+		self.inType = intype
 	
 	#----------------- Methods ------------------#
 	
@@ -51,24 +58,27 @@ class Simpheno:
 		
 		return eff
 
-	def beta_p(self, cbetta, maf):
-		res = cbetta*abs(log10(maf))
-		return res
 	
-	def prepareMatrix( self, plink_file ):
+	def prepareMatrix( self, fname ):
+		"""Prepares genotype matrix"""
 		matrix = []
-		for row in plink_file:
-			for i in range(len(row)):
-				matrix.append([])
-			break
-	
-		for row in plink_file:
-			for i in range(len(row)):
-				matrix[i].append(row[i])
+		p = Parser()
+		print self.inType
+		if self.inType == "plink" :
+			matrix = p.parse_plink(fname)
+		elif self.inType == "ms" :
+			data = p.parse_ms(fname)
+			matrix = data[0][0]
+		elif self.inType == "genome" :
+			data = p.parse_genome(fname)
+			matrix = data[0][0]
 		
+		print matrix
 		return matrix
 	
 	def getFreq( self, plink_file ):
+		"""Calculates genotype frequency"""
+		
 		freq = []
 		for col in plink_file:
 			z = 0.0
@@ -96,13 +106,15 @@ class Simpheno:
 		return freq
 		
 	def getId(self):
-		# Read plink files:
+		"""Extracts ids from provided plink-formatted file"""
 		plink_file = plinkfile.open( self.datapath )
 		if not plink_file.one_locus_per_row( ):
 			print( "This script requires that snps are rows and samples columns." )
-			exit( 1 )
+			raise plinkioReadError
 		
 		sample_list = plink_file.get_samples( )
+		if not sample_list :
+			raise plinkioGetSamplesError
 	
 		ids = []
 		for sample in sample_list:
@@ -112,13 +124,19 @@ class Simpheno:
 		self.indiv_id = ids
 
 	def simDichotomousPhe(self, cov, p0) :
+		"""Simulates dichotomous phenotype"""
+		
 		# Read plink files:
 		plink_file = plinkfile.open( self.datapath )
 		if not plink_file.one_locus_per_row( ):
 			print( "This script requires that snps are rows and samples columns." )
-			exit( 1 )
+			raise plinkioReadError
+		
 		
 		sample_list = plink_file.get_samples( )
+		if not sample_list :
+			raise getSamplesError
+			
 		locus_list = plink_file.get_loci( )
 	
 		# MAFs:
@@ -139,7 +157,6 @@ class Simpheno:
 					if locus.name in self.snpeff :
 						sum_wij_ui += wij*self.snpeff[locus.name]
 			
-				#va = sum_wij_ui*(1.0/pow(h, 2) - 1.0)
 				z = sum_wij_ui + gauss(0, 1)	
 				pr = 1/(1+exp(-z))
 			
@@ -150,20 +167,29 @@ class Simpheno:
 		self.dtrait = bin_trait
 
 	def simContinuousPhe(self, cov):
+		"""Used to simulate continuous phenotype"""
+		
 		plink_file = plinkfile.open( self.datapath )
 		if not plink_file.one_locus_per_row( ):
 			print( "This script requires that snps are rows and samples columns." )
-			exit( 1 )
+			raise plinkioReadError
 		
 		sample_list = plink_file.get_samples( )
+		if not sample_list :
+			raise plinkioGetSamplesError
+			
 		locus_list = plink_file.get_loci( )
-	
+		if not locus_list :
+			raise plinkioGetLocusError
+			
 		# MAFs:
 		frequencies = self.getFreq(plink_file)
 	
 		# Simulate continuous trait:
 		cont_trait = []
 		matrix = self.prepareMatrix(plink_file)
+		
+		
 		if cov != None:
 			pass # TODO
 		else :
@@ -175,7 +201,6 @@ class Simpheno:
 					if locus.name in self.snpeff :
 						sum_wij_ui += wij*self.snpeff[locus.name]
 			
-				#va = sum_wij_ui*(1.0/pow(self.h, 2) - 1.0)
 				z = sum_wij_ui + gauss(0, 1)	
 				
 				cont_trait.append([sample.fid, sample.iid, z])
@@ -193,23 +218,34 @@ class Simpheno:
 			covar.append(row)
 		return covar
 	
-	# lamb = scale parameter in h0()
-	# rho = shape parameter in h0()
-	# rateC = rate parameter of the exponential distribution of C
+	
 	def simulWeib(self, cov, lambd, rho, rateC):
+		"""Simulates survival time with Weibul distribution
+			lamb = scale parameter in h0()
+			rho = shape parameter in h0()
+			rateC = rate parameter of the exponential distribution of C
+		"""
+		
 		plink_file = plinkfile.open( self.datapath )
 		if not plink_file.one_locus_per_row( ):
 			print( "This script requires that snps are rows and samples columns." )
-			exit( 1 )
+			raise plinkioReadError
 		
 		sample_list = plink_file.get_samples( )
+		if not sample_list :
+			raise plinkioGetSamplesError
+			
 		locus_list = plink_file.get_loci( )
+		if not locus_list :
+			raise plinkioGetLocusError
+		
 	
-		# MAFs:
+		# MAFs
 		frequencies = self.getFreq(plink_file)
 		# Prepare genotype matrix
 		matrix = self.prepareMatrix(plink_file)
-	
+		
+
 		# Weibull latent event times
 		surv_trait = []
 		
@@ -226,19 +262,19 @@ class Simpheno:
 			Tlat = pow((-1*log(v) / (lambd * exp(sum_wij_ui))),(1/rho))
 			# censoring times
 			C = expovariate(rateC)
-			print Tlat, C
 			# follow-up times and event indicators
   			time = min(Tlat, C)
   			status = 1 if Tlat >= C else 0
-  			surv_trait.append([time, status])
+  			surv_trait.append([sample.fid, sample.iid, time, status])
   		
   		self.strait = surv_trait
   	
   	
-	# lamb = scale parameter in h0()
-	# rho = shape parameter in h0()
-	# rateC = rate parameter of the exponential distribution of C
 	def simulGomp(self, cov, lambd, rho, rateC):
+		# lamb = scale parameter in h0()
+		# rho = shape parameter in h0()
+		# rateC = rate parameter of the exponential distribution of C
+	
 		plink_file = plinkfile.open( self.datapath )
 		if not plink_file.one_locus_per_row( ):
 			print( "This script requires that snps are rows and samples columns." )
@@ -272,7 +308,7 @@ class Simpheno:
 			# follow-up times and event indicators
   			time = min(Tlat, C)
   			status = 1 if Tlat >= C else 0
-  			surv_trait.append([time, status])
+  			surv_trait.append([sample.fid, sample.iid, time, status])
   		
   		self.strait = surv_trait
   		
@@ -286,7 +322,9 @@ class Simpheno:
 			self.prepareCE()
 	
 		# Get id of each individual
-		self.getId()
+		#self.getId()
+		
+		self.prepareMatrix(path)
 		
 	def saveData(self):
 	
@@ -306,6 +344,13 @@ class Simpheno:
 				f.write('\n')
 			f.close()
 	
+		if self.strait != None :
+			# Saving continuous phenotype:
+			f = open(self.output_prefix + "_pheno_surv.txt", "w")
+			for c in self.strait :
+				f.write('\t'.join(map(str,c)))
+				f.write('\n')
+			f.close()
 	
 	
 		if self.indiv_id != None :
@@ -316,14 +361,5 @@ class Simpheno:
 				f.write('\n')
 			f.close()
 	
-		# Saving covariates:
-		#if covariates != None :
-		#	f = open(output_prefix + "_covariates.txt", "w")
-		#	for i, c in zip(ids, covariates) :
-		#		row = list(chain.from_iterable([i, c]))
-		#		f.write('\t'.join(map(str,row)))
-		#		f.write('\n')
-		#	
-		#	f.close()
-		
+			
 	

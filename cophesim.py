@@ -1,8 +1,6 @@
 #!/usr/bin/env vpython
 #   -*- coding: utf-8 -*-
 
-# A convenient wrapper for INTERSNP program
-
 import subprocess
 import sys
 import argparse
@@ -10,7 +8,6 @@ import os
 import ntpath
 
 # Importing custom modules
-from plink import *
 from simpheno import *
 from utils import *
 
@@ -22,8 +19,10 @@ def main() :
 	parser = argparse.ArgumentParser(usage=usage)
 	
 	# Input parameters
-	parser.add_argument("-i", "--input", action="store", type=str, dest="idata", default=None, required=True, help="Path to input files")
-	parser.add_argument("-o", "--output", action="store", type=str, dest="output_prefix", default=None, required=True, help="Output prefix")
+	parser.add_argument("-i", "--input", action="store", type=str, dest="idata", default=None, required=True, help="Path with prefix to your input file(s).")
+	parser.add_argument("-o", "--output", action="store", type=str, dest="output_prefix", default=None, required=True, help="Output prefix.")
+	parser.add_argument("-type", action="store", type=str, dest="intype", default="plink", required=False, help="Input type: plink (for Plink, default), ms (for ms, msms, msHot), genome (for Genome).")
+	
 	
 	# Trait (outcome) type
 	parser.add_argument("-d", "--dichotomous",action="store_true", dest="dflag", default=True, required=False, help="A flag for dichotomous phenotype, True by default.")
@@ -34,8 +33,6 @@ def main() :
 	parser.add_argument("-ce", action="store", dest="ceff", default=None, required=False, help="A path to the file with effect of each causal SNP. Must be in format: snp_name:effect.")
 	
 	# Other parameters
-	parser.add_argument("-cbetta", "--cbetta",action="store", type=float, dest="cbetta", default=0.2, required=False, help="Phenotype")
-	parser.add_argument("-b0", "--baseline_mean",action="store", type=float, dest="baseline_mean", default="80", required=False, help="Baseline mean for continuous phenotype")
 	parser.add_argument("-cov", "--covariates", action="store", type=str, dest="cov", default=None, required=False, help="Mean values of covariates, must be enumerated with comma and no spaces")
 	parser.add_argument("-p0", "--p0",action="store", type=float, dest="p0", default=0.5, required=False, help="Probability for logistic model.")
 	parser.add_argument("-weib", action="store_true", dest="weib", default=True, required=False, help="A flag to use Weibull distribution for survival phenotype. True by default.")
@@ -59,34 +56,61 @@ def main() :
 	print "Running SimPheno..."
 	covariates = None
 	if args.cov != None :
-		covariates = prepareCovariates(args.cov)
+		try :
+			covariates = prepareCovariates(args.cov)
+		except :
+			print "Warning: covariates can't be prepared."
 		
 	## All functions below need to call from a particular class (class factory)
 
 	# Instantiation of the Simpheno class
-	sim = Simpheno()
+	sim = None
 	
-	sim.prepare(args.idata, args.ceff, args.output_prefix)
+	try :
+		sim = Simpheno(intype=args.intype)
+	except :
+		print sys.exc_info()
 	
+	try :
+		sim.prepare(args.idata, args.ceff, args.output_prefix)
+	except :
+		print sys.exc_info()
+	"""
 	if args.dflag :
 		# Simulate dichotomous (binary) trait
-		sim.simDichotomousPhe(covariates, args.p0)
+		try :
+			sim.simDichotomousPhe(covariates, args.p0)
+		except :
+			print sys.exc_info()
 	
 	if args.cflag :
 		# Simulate continuous (qualitative) trait
-		sim.simContinuousPhe(covariates)
+		try :
+			sim.simContinuousPhe(covariates)
+		except :
+			print sys.exc_info()
 	
 	if args.sflag :
 		# Simulate survival trait
 		if args.weib :
-			sim.simulWeib(covariates, 7e-8, 1, 0.01)
+			try :
+				sim.simulWeib(covariates, 7e-8, 1, 0.01)
+			except :
+				print sys.exc_info()
 		if args.gomp :
-			sim.simulGomp(covariates, 7e-8, 1, 0.01)
+			try :
+				sim.simulGomp(covariates, 7e-8, 1, 0.01)
+			except :
+				print sys.exc_info()
 	
 	
-	print "Saving results..."	
-	sim.saveData()
-	
+	print "Saving results..."
+	try :	
+		sim.saveData()
+	except :
+		print "Cannot save results."
+		sys.exit(-1)
+	"""
 	print "Done!"
 
 
