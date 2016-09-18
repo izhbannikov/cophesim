@@ -1,5 +1,9 @@
-python cophesim.py -i ../cophesim_test/sim1 -o ../cophesim_test/out -d
+python cophesim.py -i ../cophesim_test/other_tools/genome_input.txt -o ../cophesim_test/out -type genome
+
+python cophesim.py -i ../cophesim_test/other_tools/genome_input.txt -o ../cophesim_test/out -type ms
 
 python cophesim.py -i ../cophesim_test/sim1 -o ../cophesim_test/out -c
 
 python cophesim.py -i ../cophesim_test/sim1 -o ../cophesim_test/out -s
+
+python cophesim.py -i ../cophesim_test/other_tools/genome_input.txt -o ../cophesim_test/out -type genome -s -gomp

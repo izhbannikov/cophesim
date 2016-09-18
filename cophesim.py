@@ -2,10 +2,11 @@
 #   -*- coding: utf-8 -*-
 
 import subprocess
-import sys
 import argparse
 import os
 import ntpath
+import sys
+import traceback
 
 # Importing custom modules
 from simpheno import *
@@ -74,21 +75,31 @@ def main() :
 	try :
 		sim.prepare(args.idata, args.ceff, args.output_prefix)
 	except :
-		print sys.exc_info()
-	"""
+		print "Exception in user code:"
+		print '-'*60
+		traceback.print_exc(file=sys.stdout)
+		print '-'*60
+	
 	if args.dflag :
 		# Simulate dichotomous (binary) trait
 		try :
 			sim.simDichotomousPhe(covariates, args.p0)
 		except :
-			print sys.exc_info()
+			print "Exception in user code:"
+			print '-'*60
+			traceback.print_exc(file=sys.stdout)
+			print '-'*60
+			
 	
 	if args.cflag :
 		# Simulate continuous (qualitative) trait
 		try :
 			sim.simContinuousPhe(covariates)
 		except :
-			print sys.exc_info()
+			print "Exception in user code:"
+			print '-'*60
+			traceback.print_exc(file=sys.stdout)
+			print '-'*60
 	
 	if args.sflag :
 		# Simulate survival trait
@@ -96,21 +107,29 @@ def main() :
 			try :
 				sim.simulWeib(covariates, 7e-8, 1, 0.01)
 			except :
-				print sys.exc_info()
+				print "Exception in user code:"
+				print '-'*60
+				traceback.print_exc(file=sys.stdout)
+				print '-'*60
 		if args.gomp :
 			try :
 				sim.simulGomp(covariates, 7e-8, 1, 0.01)
 			except :
-				print sys.exc_info()
+				print "Exception in user code:"
+				print '-'*60
+				traceback.print_exc(file=sys.stdout)
+				print '-'*60
 	
 	
 	print "Saving results..."
 	try :	
 		sim.saveData()
 	except :
-		print "Cannot save results."
-		sys.exit(-1)
-	"""
+		print "Exception in user code:"
+		print '-'*60
+		traceback.print_exc(file=sys.stdout)
+		print '-'*60
+	
 	print "Done!"
 
 

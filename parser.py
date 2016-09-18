@@ -82,8 +82,8 @@ class Parser() :
 			if l[:3]=='pos':
 				s=re.sub('positions: ','',l.rstrip())
 				positions=map(float,s.split(' '))
-
-			if l[0] in ['0','1']:
+			
+			if l[0] in ['0','1', '2']:
 				genotypes.append(list(l.rstrip()))
 		
 		raw_genotypes=genotypes
