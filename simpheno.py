@@ -117,7 +117,7 @@ class Simpheno():
 	
 		self.indiv_id = ids
 
-	def simDichotomousPhe(self, cov, p0) :
+	def simDichotomousPhe(self, cov=None) :
 		"""Simulates dichotomous phenotype"""
 		
 		bin_trait = []
@@ -149,7 +149,7 @@ class Simpheno():
 	
 		self.dtrait = bin_trait
 
-	def simContinuousPhe(self, cov):
+	def simContinuousPhe(self, cov=None):
 		"""Used to simulate continuous phenotype"""
 		cont_trait = []
 		
@@ -186,7 +186,7 @@ class Simpheno():
 		return covar
 	
 	
-	def simulWeib(self, cov, lambd, rho, rateC):
+	def simulWeib(self, lambd, rho, rateC, cov=None):
 		"""Simulates survival time with Weibul distribution
 			lamb = scale parameter in h0()
 			rho = shape parameter in h0()
@@ -214,18 +214,18 @@ class Simpheno():
 			C = expovariate(rateC)
 			# follow-up times and event indicators
   			time = min(Tlat, C)
-  			status = 1 if Tlat >= C else 0
-  			#surv_trait.append([time, status])
-  			surv_trait.append(time)
+  			status = 0 if Tlat >= C else 1
+  			surv_trait.append([time, status])
+  			#surv_trait.append(time)
   		self.strait = surv_trait
   	
   	
-	def simulGomp(self, cov, lambd, rho, rateC):
-		# lamb = scale parameter in h0()
-		# rho = shape parameter in h0()
-		# rateC = rate parameter of the exponential distribution of C
-	
-		# Gompertz latent event times
+	def simulGomp(self, lambd, rho, rateC, cov=None):
+		"""Simulates Gompertz latent event times 
+			lamb = scale parameter in h0()
+			rho = shape parameter in h0()
+			rateC = rate parameter of the exponential distribution of C
+		"""
 		surv_trait = []	
 		
 		for row in self.genoMatrix[0][0]:
@@ -248,8 +248,9 @@ class Simpheno():
 			C = expovariate(rateC)
 			# follow-up times and event indicators
   			time = min(Tlat, C)
-  			status = 1 if Tlat >= C else 0
-  			surv_trait.append(time) #surv_trait.append([time, status])
+  			status = 0 if Tlat >= C else 1
+
+  			surv_trait.append([time, status]) # surv_trait.append(time)
   		self.strait = surv_trait
   		
 	def prepare(self, path, cefile, outprefix) :
@@ -269,10 +270,11 @@ class Simpheno():
 			# Saving dichotomous phenotype #
 			ofname = self.output_prefix + "_pheno_bin.txt"
 			f = open(ofname, "w")
-			
-			for d in self.dtrait :
-				f.write(str(d))
-				f.write('\n')
+			f.write("id sex pheno\n")
+			iid = []
+			[iid.append(i) for i in range(len(self.dtrait))]
+			for id, d in zip(iid, self.dtrait) :
+				f.write( "%s 0 %s\n" % (str(id), str(d)) ) 
 			f.close()
 			
 			# Formatted writing #
@@ -282,9 +284,11 @@ class Simpheno():
 			# Saving continuous phenotype #
 			ofname = self.output_prefix + "_pheno_cont.txt"
 			f = open(ofname, "w")
-			for c in self.ctrait :
-				f.write(str(c))
-				f.write('\n')
+			f.write("id sex pheno\n")
+			iid = []
+			[iid.append(i) for i in range(len(self.ctrait))]
+			for id, c in zip(iid, self.ctrait) :
+				f.write( "%s 0 %s\n" % (str(id), str(c)) ) 
 			f.close()
 			
 			# Formatted writing #
@@ -294,13 +298,17 @@ class Simpheno():
 			# Saving continuous phenotype #
 			ofname = self.output_prefix + "_pheno_surv.txt"
 			f = open(ofname, "w")
-			for s in self.strait :
-				f.write(str(s))
-				f.write('\n')
+			f.write("id sex age case\n")
+			iid = []
+			[iid.append(i) for i in range(len(self.strait))]
+			for id, s in zip(iid, self.strait) :
+				f.write( "%s 0 %s %s\n" % (str(id), str(s[0]), str(s[1])) ) 
 			f.close()
 			
 			# Formatted writing #
-			self.writeInSpecificFormat(ofname, self.strait)
+			trait = []
+			[trait.append(self.strait[i][0]) for i in range(len(self.strait))]
+			self.writeInSpecificFormat(ofname, trait)
 	
 	
 		if self.indiv_id != None :

@@ -62,7 +62,7 @@ class Writer :
 			#l='%s %s 0 0 0 %s ' %(i,i, 2 if phenotype[i] == 1 else 1)
 			l='%s %s 0 0 0 %s ' %(i,i, phenotype[i])
 			s=' '.join(map(str,marker[i]))+'\n'
-			#print s
+			
 			if diploid:
 				s=s.replace('2','A A')
 				s=s.replace('1','A T')

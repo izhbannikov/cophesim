@@ -40,7 +40,6 @@ def main() :
 	parser.add_argument("-hh", action="store", type=float, dest="h", default=0.8, required=False, help="TODO")
 	parser.add_argument("-alpha", action="store", type=float, dest="alpha", default=0.2138, required=False, help="TODO")
 	parser.add_argument("-cov", "--covariates", action="store", type=str, dest="cov", default=None, required=False, help="Mean values of covariates, must be enumerated with comma and no spaces")
-	parser.add_argument("-p0", "--p0",action="store", type=float, dest="p0", default=0.5, required=False, help="Probability for logistic model.")
 	parser.add_argument("-weib", action="store_true", dest="weib", default=True, required=False, help="A flag to use Weibull distribution for survival phenotype. True by default.")
 	parser.add_argument("-gomp", action="store_true", dest="gomp", default=False, required=False, help="A flag to use Gompertz distribution for survival phenotype. False by default.")
 	
@@ -89,7 +88,7 @@ def main() :
 	if args.dflag :
 		# Simulate dichotomous (binary) trait
 		try :
-			sim.simDichotomousPhe(covariates, args.p0)
+			sim.simDichotomousPhe()
 		except :
 			print "Exception in user code:"
 			print '-'*60
@@ -100,7 +99,7 @@ def main() :
 	if args.cflag :
 		# Simulate continuous (qualitative) trait
 		try :
-			sim.simContinuousPhe(covariates)
+			sim.simContinuousPhe()
 		except :
 			print "Exception in user code:"
 			print '-'*60
@@ -111,7 +110,7 @@ def main() :
 		# Simulate survival trait
 		if args.weib :
 			try :
-				sim.simulWeib(covariates, 7e-8, 1, 0.01)
+				sim.simulWeib(7e-8, 1, 0.01)
 			except :
 				print "Exception in user code:"
 				print '-'*60
@@ -119,7 +118,7 @@ def main() :
 				print '-'*60
 		if args.gomp :
 			try :
-				sim.simulGomp(covariates, 7e-8, 1, 0.01)
+				sim.simulGomp(7e-8, 1, 0.01)
 			except :
 				print "Exception in user code:"
 				print '-'*60
