@@ -31,12 +31,14 @@ def main() :
 	parser.add_argument("-s", "--suvival", action="store_true", dest="sflag", default=False, required=False, help="A flag to simulate survival phenotype, False by default.")
 	
 	# Effects from causal SNPs
-	parser.add_argument("-ce", action="store", dest="ceff", default=None, required=False, help="A path to the file with effect of each causal SNP. Must be in format: snp_name:effect.")
+	parser.add_argument("-ce", action="store", dest="ceff", default=None, required=False, help="A path to the file with effect of each causal SNP. Must be in format: snp_index:effect.")
 	
 	# Parameters for the output format #
 	parser.add_argument("-otype", action="store", dest="otype", default="plink", required=False, help="Indicates output format, default=plink. Other possible output format: blossoc (for BLOSSOC), qtdt (for QTDT), tassel (for Tassel), emmax (for EMMAX).")
 	
 	# Miscellaneous parameters #
+	parser.add_argument("-hh", action="store", type=float, dest="h", default=0.8, required=False, help="TODO")
+	parser.add_argument("-alpha", action="store", type=float, dest="alpha", default=0.2138, required=False, help="TODO")
 	parser.add_argument("-cov", "--covariates", action="store", type=str, dest="cov", default=None, required=False, help="Mean values of covariates, must be enumerated with comma and no spaces")
 	parser.add_argument("-p0", "--p0",action="store", type=float, dest="p0", default=0.5, required=False, help="Probability for logistic model.")
 	parser.add_argument("-weib", action="store_true", dest="weib", default=True, required=False, help="A flag to use Weibull distribution for survival phenotype. True by default.")

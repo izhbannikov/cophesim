@@ -46,7 +46,7 @@ class Parser() :
 				matrix[i].append(row[i])
 		genotypes_all = [matrix]
 		positions = [[]]
-		[positions[0].append(0.0) for i in range(len(row))]
+		[positions[0].append(0.0) for i in range(len(matrix[0]))]
 		raw_all = [matrix]
 		return genotypes_all,positions,raw_all
 

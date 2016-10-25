@@ -32,8 +32,8 @@ class Simpheno():
 		self.alleleFreq = None
 		self.snpeff = dict()
 		# Misc #
-		self.h = 0.8
-		self.alpha = 0.2138
+		self.h = inargs.h
+		self.alpha = inargs.alpha
 		
 	
 	
@@ -129,15 +129,20 @@ class Simpheno():
 				sum_wij_ui = 0.0
 				for g,freq,j in zip(row, self.alleleFreq, range(len(row))) : #, locus_list) :
 					g = float(g)
-					wij = (g - 2.0*freq) / sqrt(2.0*freq*(1.0 - freq))
-					
-					if j in self.snpeff :
-						sum_wij_ui += wij*self.snpeff[j]
+					wij = 0.0
+					if len(self.snpeff) == 0 :
+						wij = (g - 2.0*freq) / sqrt(2.0*freq*(1.0 - freq))
+						sum_wij_ui += g*wij
+					else :
+						if j in self.snpeff :
+							sum_wij_ui += g*self.snpeff[j]
+					#else :
+					#	print "Warning: SNP with index", j, "not found."
 			
 				z = sum_wij_ui + gauss(0, 1)	
 				pr = 1/(1+exp(-z))
 			
-				bt = 1 if pr > p0 else 0
+				bt = 1 if pr > uniform(0,1) else 0
 				
 				#bin_trait.append([sample.fid, sample.iid, bt])
 				bin_trait.append(bt)
@@ -155,10 +160,13 @@ class Simpheno():
 				sum_wij_ui = 0.0
 				for g,freq,j in zip(row, self.alleleFreq, range(len(row))) :
 					g = float(g)
-					wij = (g - 2.0*freq) / sqrt(2.0*freq*(1.0 - freq))
-					
-					if j in self.snpeff :
-						sum_wij_ui += wij*self.snpeff[j]
+					wij = 0.0
+					if len(self.snpeff) == 0 :
+						wij = (g - 2.0*freq) / sqrt(2.0*freq*(1.0 - freq))
+						sum_wij_ui += g*wij
+					else :
+						if j in self.snpeff :
+							sum_wij_ui += g*self.snpeff[j]
 			
 				z = sum_wij_ui + gauss(0, 1)	
 				
@@ -190,10 +198,14 @@ class Simpheno():
 			sum_wij_ui = 0.0
 			for g,freq,j in zip(row,self.alleleFreq, range(len(row))) :
 				g = float(g)
-				wij = (g - 2.0*freq) / sqrt(2.0*freq*(1.0 - freq))
+				wij = 0.0
+				if len(self.snpeff) == 0 :
+					wij = (g - 2.0*freq) / sqrt(2.0*freq*(1.0 - freq))
+					sum_wij_ui += g*wij
+				else :
+					if j in self.snpeff :
+						sum_wij_ui += g*self.snpeff[j]
 					
-				if j in self.snpeff :
-					sum_wij_ui += wij*self.snpeff[j]
 				
 			v = uniform(0,1)
 			
@@ -220,10 +232,14 @@ class Simpheno():
 			sum_wij_ui = 0.0
 			for g,freq,j in zip(row,self.alleleFreq, range(len(row))) :
 				g = float(g)
-				wij = (g - 2.0*freq) / sqrt(2.0*freq*(1.0 - freq))
-					
-				if j in self.snpeff :
-					sum_wij_ui += wij*self.snpeff[j]
+				wij = 0.0
+				if len(self.snpeff) == 0 :
+					wij = (g - 2.0*freq) / sqrt(2.0*freq*(1.0 - freq))
+					sum_wij_ui += g*wij
+				else :
+					if j in self.snpeff :
+						sum_wij_ui += g*self.snpeff[j]
+				
 				
 			v = uniform(0,1)
 			

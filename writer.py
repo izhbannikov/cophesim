@@ -59,7 +59,7 @@ class Writer :
 		f=open('%s.ped'%fname,'w')
 
 		for i in xrange(len(marker)):
-			l='%s 1 0 0 0 %s ' %(i,phenotype[i])
+			l='%s %s 0 0 0 %s ' %(i,i, 2 if phenotype[i] == 1 else 1)
 			s=' '.join(map(str,marker[i]))+'\n'
 			#print s
 			if diploid:
@@ -89,7 +89,7 @@ class Writer :
 		f=open('%s.pheno'%fname,'w')
 
 		for i in xrange(len(phenotype)):
-			l='%s 1 %s\n' %(i,phenotype[i])
+			l='%s 1 %s\n' %(i,2 if phenotype[i] == 1 else 1)
 			f.write(l)
 
 		f.close()
