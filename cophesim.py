@@ -19,13 +19,13 @@ def main() :
 	usage = "cophesim.py -i <path to plink files> -o <output prefix> [other options]"
 	parser = argparse.ArgumentParser(usage=usage)
 	
-	# Input parameters
+	# Input parameters #
 	parser.add_argument("-i", "--input", action="store", type=str, dest="idata", default=None, required=True, help="Path with prefix to your input file(s).")
 	parser.add_argument("-o", "--output", action="store", type=str, dest="output_prefix", default=None, required=True, help="Output prefix.")
-	parser.add_argument("-type", action="store", type=str, dest="intype", default="plink", required=False, help="Input type: plink (for Plink, default), ms (for ms, msms, msHot), genome (for Genome).")
+	parser.add_argument("-itype", action="store", type=str, dest="itype", default="plink", required=False, help="Input format: plink (for Plink, default), ms (for ms, msms, msHot), genome (for Genome).")
 	
 	
-	# Trait (outcome) type
+	# Trait (outcome, phenotype) type #
 	parser.add_argument("-d", "--dichotomous",action="store_true", dest="dflag", default=True, required=False, help="A flag for dichotomous phenotype, True by default.")
 	parser.add_argument("-c", "--continuous",action="store_true", dest="cflag", default=False, required=False, help="A flag for continous phenotype, False by default.")
 	parser.add_argument("-s", "--suvival", action="store_true", dest="sflag", default=False, required=False, help="A flag to simulate survival phenotype, False by default.")
@@ -33,12 +33,14 @@ def main() :
 	# Effects from causal SNPs
 	parser.add_argument("-ce", action="store", dest="ceff", default=None, required=False, help="A path to the file with effect of each causal SNP. Must be in format: snp_name:effect.")
 	
-	# Other parameters
+	# Parameters for the output format #
+	parser.add_argument("-otype", action="store", dest="otype", default="plink", required=False, help="Indicates output format, default=plink. Other possible output format: blossoc (for BLOSSOC), qtdt (for QTDT), tassel (for Tassel), emmax (for EMMAX).")
+	
+	# Miscellaneous parameters #
 	parser.add_argument("-cov", "--covariates", action="store", type=str, dest="cov", default=None, required=False, help="Mean values of covariates, must be enumerated with comma and no spaces")
 	parser.add_argument("-p0", "--p0",action="store", type=float, dest="p0", default=0.5, required=False, help="Probability for logistic model.")
 	parser.add_argument("-weib", action="store_true", dest="weib", default=True, required=False, help="A flag to use Weibull distribution for survival phenotype. True by default.")
 	parser.add_argument("-gomp", action="store_true", dest="gomp", default=False, required=False, help="A flag to use Gompertz distribution for survival phenotype. False by default.")
-	
 	
 	#--------- Checking the input arguments ----------#
 	args = parser.parse_args()
@@ -68,7 +70,9 @@ def main() :
 	sim = None
 	
 	try :
-		sim = Simpheno(intype=args.intype)
+		print "Phenotype preparation..."
+		sim = Simpheno(inargs=args)
+		print "Done"
 	except :
 		print sys.exc_info()
 	

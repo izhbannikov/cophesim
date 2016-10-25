@@ -7,3 +7,6 @@ python cophesim.py -i ../cophesim_test/sim1 -o ../cophesim_test/out -c
 python cophesim.py -i ../cophesim_test/sim1 -o ../cophesim_test/out -s
 
 python cophesim.py -i ../cophesim_test/other_tools/genome_input.txt -o ../cophesim_test/out -type genome -s -gomp
+
+python cophesim.py -i ../cophesim_test/other_tools/genome_input.txt -o ../cophesim_test/out -type genome -ce ../cophesim_test/data/effects.txt 
+

@@ -44,8 +44,11 @@ class Parser() :
 		for row in plink_file:
 			for i in range(len(row)):
 				matrix[i].append(row[i])
-		
-		return matrix
+		genotypes_all = [matrix]
+		positions = [[]]
+		[positions[0].append(0.0) for i in range(len(row))]
+		raw_all = [matrix]
+		return genotypes_all,positions,raw_all
 
 	def parse_ms(self, fname,diploid=0):
 		""" For parsing ms, msms and msHot output """

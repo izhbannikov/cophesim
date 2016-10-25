@@ -2,9 +2,9 @@
 
 Simulation tool to simulate phenotypes: continuous, dichotomous and survival for common variants from existing genotype data simulated with some other tool.
 
-Version: 1.2.1
+Version: 1.2.2
 
-© Ilya Y. Zhbannikov, 2016-09-10
+© Ilya Y. Zhbannikov, 2016-10-24
 
 ##Requirements
 
@@ -37,5 +37,7 @@ python cophesim.py -i <path to the directory with .bed, .bim, .fam files> -out <
 python cophesim.py -out ~/Projects/cophesim/test.output
 
 python cophesim.py -out ~/Projects/cophesim/test.output -c -s
+
+python cophesim/cophesim.py -i cophesim_test/tools/plink/sim1 -o cophesim_test/out/testout -itype plink -otype plink -s
 
 ```

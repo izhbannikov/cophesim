@@ -3,7 +3,7 @@
 
 class Writer :
 
-	def convert2emma(marker,positions,phenotypes,fname):
+	def convert2emma(self, marker,positions,phenotypes,fname):
 
 		marker_lines=[]
 
@@ -31,7 +31,7 @@ class Writer :
 
 
 
-	def convert2blossoc(marker,positions,phenotype,fname,diploid=0):
+	def convert2blossoc(self, marker,positions,phenotype,fname,diploid=0):
 
 		marker_lines=[]
 
@@ -54,8 +54,8 @@ class Writer :
 
 		return
 
-	def convert2plink(marker,positions,phenotype,fname,diploid=0):
-
+	def convert2plink(self, marker,positions,phenotype,fname,diploid=0):
+		
 		f=open('%s.ped'%fname,'w')
 
 		for i in xrange(len(marker)):
@@ -98,7 +98,7 @@ class Writer :
 		return
 
 
-	def convert2qtdt(marker,positions,phenotype,fname,diploid=0,quant=1):
+	def convert2qtdt(self, marker,positions,phenotype,fname,diploid=0,quant=1):
 
 		f=open('%s.ped'%fname,'w')
 
@@ -149,7 +149,7 @@ class Writer :
 
 		return
 
-	def convert2tassel(marker,positions,phenotype,fname,diploid=0):
+	def convert2tassel(self, marker,positions,phenotype,fname,diploid=0):
 
 		f=open('%s.trait'%fname,'w')
 	
@@ -172,7 +172,7 @@ class Writer :
 		for i in xrange(len(marker)):
 			f.write('ind%s'%i)
 			for j in xrange(len(marker[i])):
-				allele=marker[i][j]
+				allele=str(marker[i][j])
 				if not diploid:
 					allele=allele.replace('NA','?')
 					allele=allele.replace('0','T')
