@@ -38,6 +38,10 @@ class Simpheno():
 	
 	
 	#----------------- Methods ------------------#
+	def mean(self, numbers):
+		"""Calculates average value of provided numbers"""
+		return float(sum(numbers)) / max(len(numbers), 1)
+
 	
 	def prepareCE(self):
 		""" Prepares a list of effects from causal SNPs """
@@ -335,5 +339,33 @@ class Simpheno():
 			w.convert2qtdt(self.genoMatrix[0][0],self.genoMatrix[1][0],trait,ofname)
 		elif self.oType == "tassel" :
 			w.convert2tassel(self.genoMatrix[0][0],self.genoMatrix[1][0],trait,ofname)
+			
+	def summary(self) :
+		""" Generates summary statistics """
+		ofname = self.output_prefix + "_summary.txt"
+		f = open(ofname, "w")
+		# Provided input parameters #
+		f.write("Input type: " + self.inType+'\n')
+		f.write("Output type: " + self.oType+'\n')
+		f.write("Input data: " + self.datapath+'\n')
+		f.write("Cefile: " + self.cefile+'\n')
+		f.write("Output prefix: " + self.output_prefix+'\n')
+		f.write("h: " + str(self.h)+'\n')
+		f.write("alpha: " + str(self.alpha)+'\n')
+		# Results summary #
+		f.write( "Number of SNPs: %s\n" % str(len(self.genoMatrix[0][0][0])) )
+		f.write( "Number of individuals: %s\n" % str(len(self.genoMatrix[0][0])) )
+		# For number of cases and controls #
+		ncase = sum(self.dtrait)
+		ncont = len(self.genoMatrix[0][0]) - ncase
+		f.write( "Number of cases: %s\n" % str(ncase) )
+		f.write( "Number of controls: %s\n" % str(ncont) )
+		# Average for continous phenotype #
+		if self.ctrait != None :
+			f.write( "Average for continous phenotype: %s\n" % str(self.mean(self.ctrait)) )
+		# Average for survival phenotype #
+		#if self.strait != None :
+		#	f.write( "Average for survival phenotype: %s" % str(self.mean(self.strait)) )
 		
+		f.close()
 	

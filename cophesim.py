@@ -134,6 +134,15 @@ def main() :
 		print '-'*60
 		traceback.print_exc(file=sys.stdout)
 		print '-'*60
+		
+	print "Summary statistics..."
+	try :
+		sim.summary()
+	except :
+		print "Exception in user code:"
+		print '-'*60
+		traceback.print_exc(file=sys.stdout)
+		print '-'*60
 	
 	print "Done!"
 
