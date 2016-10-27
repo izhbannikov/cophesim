@@ -34,6 +34,7 @@ class Simpheno():
 		# Misc #
 		self.h = inargs.h
 		self.alpha = inargs.alpha
+		self.epifile = inargs.epifile
 		
 	
 	
@@ -59,6 +60,30 @@ class Simpheno():
 		
 		self.snpeff = eff
 
+	def prepareEpi(self):
+		""" Prepares a list of effects from causal SNPs """
+		
+		epi = dict()
+		
+		# Read cefile
+		f = open(self.epifile)
+		lines = f.readlines()
+		f.close()
+		
+		for l in lines :
+			splits = l.split(',')
+			if len(splits) == 3 :
+				snp1 = int(splits[0].strip())
+				snp2 = int(splits[1].strip())
+				effect = float(splits[2].replace('\n','').strip())
+				if snp1 not in epi :
+					epi[snp1] = dict()
+					epi[snp1][snp2] = effect
+				else :
+					epi[snp1][snp2] = effect
+		
+		self.epieff = epi
+		
 	
 	def prepareMatrix( self, fname ):
 		"""Prepares genotype matrix"""
@@ -140,8 +165,11 @@ class Simpheno():
 					else :
 						if j in self.snpeff :
 							sum_wij_ui += g*self.snpeff[j]
-					#else :
-					#	print "Warning: SNP with index", j, "not found."
+					
+					# Interactions
+					if j in self.epieff :
+						for jj in self.epieff[j].keys() :
+							sum_wij_ui += g*row[jj]*self.epieff[j][jj]
 			
 				z = sum_wij_ui + gauss(0, 1)	
 				pr = 1/(1+exp(-z))
@@ -171,6 +199,11 @@ class Simpheno():
 					else :
 						if j in self.snpeff :
 							sum_wij_ui += g*self.snpeff[j]
+							
+					# Interactions
+					if j in self.epieff :
+						for jj in self.epieff[j].keys() :
+							sum_wij_ui += g*row[jj]*self.epieff[j][jj]
 			
 				z = sum_wij_ui + gauss(0, 1)	
 				
@@ -209,7 +242,11 @@ class Simpheno():
 				else :
 					if j in self.snpeff :
 						sum_wij_ui += g*self.snpeff[j]
-					
+						
+				# Interactions
+				if j in self.epieff :
+					for jj in self.epieff[j].keys() :
+						sum_wij_ui += g*row[jj]*self.epieff[j][jj]
 				
 			v = uniform(0,1)
 			
@@ -244,6 +281,10 @@ class Simpheno():
 					if j in self.snpeff :
 						sum_wij_ui += g*self.snpeff[j]
 				
+				# Interactions
+				if j in self.epieff :
+					for jj in self.epieff[j].keys() :
+						sum_wij_ui += g*row[jj]*self.epieff[j][jj]
 				
 			v = uniform(0,1)
 			
@@ -265,6 +306,10 @@ class Simpheno():
 		# Prepare SNP effects from file
 		if self.cefile != None :
 			self.prepareCE()
+			
+		# Prepare interaction effects from provided file
+		if self.epifile != None :
+			self.prepareEpi()
 	
 		self.prepareMatrix(path)
 		
