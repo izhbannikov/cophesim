@@ -13,6 +13,14 @@ Version: 1.3.1
 3. Plink v1.7 (to run examples)
 4. R (to run examples)
 
+## Installation
+
+Download/clone the cophesim repository. The software is ready to use. You may add the home directory of cophesim to the PATH:
+
+```
+export PYTHONPATH=<cophesim home directory>:$PYTHONPATH
+```
+
 ## Input
 
 Files in one of the following data formats: Plink (.bed, .bim, .fam); ms, msms, msHot (plain text file), Genome (plain text file).
@@ -31,7 +39,7 @@ $python cophesim.py -i <path genotype files> -out <ouput prefix> [other paramete
 ###Other parameters:
 
 ```
--h, --help            show this help message and exit
+  -h, --help            show the help message and exit
   -i IDATA, --input IDATA
                         Path with prefix to your input file(s).
   -o OUTPUT_PREFIX, --output OUTPUT_PREFIX
