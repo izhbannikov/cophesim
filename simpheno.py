@@ -31,8 +31,9 @@ class Simpheno():
 		self.genoMatrix = None
 		self.alleleFreq = None
 		self.snpeff = dict()
+		self.epieff = dict()
 		# Misc #
-		self.h = inargs.h
+		#self.h = inargs.h
 		self.alpha = inargs.alpha
 		self.epifile = inargs.epifile
 		
@@ -393,9 +394,10 @@ class Simpheno():
 		f.write("Input type: " + self.inType+'\n')
 		f.write("Output type: " + self.oType+'\n')
 		f.write("Input data: " + self.datapath+'\n')
-		f.write("Cefile: " + self.cefile+'\n')
+		f.write("Cefile: " + str(self.cefile)+'\n')
+		f.write("Epifile: " + str(self.epifile)+'\n')
 		f.write("Output prefix: " + self.output_prefix+'\n')
-		f.write("h: " + str(self.h)+'\n')
+		#f.write("h: " + str(self.h)+'\n')
 		f.write("alpha: " + str(self.alpha)+'\n')
 		# Results summary #
 		f.write( "Number of SNPs: %s\n" % str(len(self.genoMatrix[0][0][0])) )

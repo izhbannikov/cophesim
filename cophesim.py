@@ -37,8 +37,8 @@ def main() :
 	parser.add_argument("-otype", action="store", dest="otype", default="plink", required=False, help="Indicates output format, default=plink. Other possible output format: blossoc (for BLOSSOC), qtdt (for QTDT), tassel (for Tassel), emmax (for EMMAX).")
 	
 	# Miscellaneous parameters #
-	parser.add_argument("-hh", action="store", type=float, dest="h", default=0.8, required=False, help="TODO")
-	parser.add_argument("-alpha", action="store", type=float, dest="alpha", default=0.2138, required=False, help="TODO")
+	#parser.add_argument("-hh", action="store", type=float, dest="h", default=0.8, required=False, help="TODO")
+	parser.add_argument("-alpha", action="store", type=float, dest="alpha", default=0.2138, required=False, help="An 'alpha' parameter for inverse probability equation for the Gompertz hazard (see Bender at al., Generating survival times to simulate Cox proportional hazards models), 2005.")
 	parser.add_argument("-epi", action="store", type=str, dest="epifile", default=None, required=False, help="File with interacting SNPs. One pair per line. Format: snp1_index,snp2_index,effect")
 	parser.add_argument("-weib", action="store_true", dest="weib", default=True, required=False, help="A flag to use Weibull distribution for survival phenotype. True by default.")
 	parser.add_argument("-gomp", action="store_true", dest="gomp", default=False, required=False, help="A flag to use Gompertz distribution for survival phenotype. False by default.")
@@ -46,13 +46,14 @@ def main() :
 	#--------- Checking the input arguments ----------#
 	args = parser.parse_args()
 	
-	if not os.path.exists(os.path.dirname(args.idata)):
+	if not os.path.exists(os.path.dirname(args.idata)) and args.itype != "plink":
 		print "Directory", args.indata, "not exists. Aborting."
 		sys.exit(-1)
 	
 	if not os.path.exists(os.path.dirname(args.output_prefix)):
 		print "Directory", args.output_prefix, "not exists and will be created."
-		os.makedirs(os.path.dirname(args.output_prefix))
+		if len(os.path.dirname(args.output_prefix)) != 0 :
+			os.makedirs(os.path.dirname(args.output_prefix))
 	
 	
 	#---------- Simulation ---------------#
