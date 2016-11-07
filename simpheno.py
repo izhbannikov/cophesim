@@ -97,9 +97,10 @@ class Simpheno():
 			self.genoMatrix = p.parse_ms(fname)
 		elif self.inType == "genome" :
 			self.genoMatrix = p.parse_genome(fname)
-		
+			
 		""" Prepare genotype frequencies """
 		freq = []
+		
 		for j in range(len(self.genoMatrix[0][0][0])) :
 			z = 0.0
 			o = 0.0

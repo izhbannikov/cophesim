@@ -67,12 +67,38 @@ $python cophesim.py -i <path genotype files> -out <ouput prefix> [other paramete
                         phenotype. False by default.
 ```
 
-## Example
+## Examples
 
 ```
 plink --simulate-ncases 5000 --simulate-ncontrols 5000 --simulate wgas.sim --out sim.plink --make-bed
 
 python cophesim.py -i sim.plink -o testout
 ```
+The first command runs the data simulation. Here we simulate genetic dataset of 10k individuals, 5k cases and 5k controls. SNPs defined in \texttt{wgas.sim} (should be in the \texttt{cophesim} home directory). Then with next command we add a phenotype (dichotomous by default) to simulated genetic data.
 
-See the user manual for more examples.
+To simulate continuous phenotypic trait, add the '-c' flag:
+
+```
+python cophesim.py -i sim.plink -o testout -c
+```
+
+This will simulate both continuous and dichotomous traits. To simulate survival trait, add '-s' flag:
+
+```
+python cophesim.py -i sim.plink -o testout -s
+```
+
+To test the output from other tools I prepared another repository: https://bitbucket.org/izhbannikov/cophesim_data . Clone or download this repository.
+
+Example reading GENOME output:
+
+```
+python cophesim.py -i ../cophesim_data/tools/genome-0.2/genome.out.txt -o testout -s -c -itype genome -otype emmax
+```
+
+Example reading ms output:
+
+```
+python cophesim.py -i ../cophesim_data/tools/ms/ms.out.txt -o testout -s -c -itype ms -otype blossoc
+```
+
