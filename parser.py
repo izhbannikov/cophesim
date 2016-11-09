@@ -3,8 +3,17 @@
 
 from itertools import chain
 import re
-from plinkio import plinkfile
 import os
+import imp
+
+#----------- Importing plinkio ---------------#
+try:
+    plinkio_info = imp.find_module('plinkio')
+    from plinkio import plinkfile
+except ImportError:
+	print "Warning: plinkio not installed. Install the plinkio, otherwise the program can not handle .bed, .bim and .fam files."
+
+
 
 """
 This code was borrowed from phenosim (phenotype simulator) written by Gunter T at al.

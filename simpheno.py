@@ -11,7 +11,7 @@ try:
     plinkio_info = imp.find_module('plinkio')
     from plinkio import plinkfile
 except ImportError:
-	print "Warning: plinkio not installed."
+	print "Warning: plinkio not installed. Install the plinkio, otherwise the program can not handle .bed, .bim and .fam files."
 
 #----------- Importing custom modules -----------------#
 from exceptions import *
