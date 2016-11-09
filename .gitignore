@@ -11,3 +11,5 @@
 *pheno_cont.txt
 *covariates.txt
 *id.txt
+*.ped
+*.map
