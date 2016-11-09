@@ -15,6 +15,13 @@ from utils import *
 # Starts the simulation
 def main() :
 
+	#------------ Checking for dependencies --------------#
+	try:
+		plinkio_info = imp.find_module('plinkio')
+	except ImportError:
+		print "Warning: plinkio not installed. Install the plinkio, otherwise the program can not handle .bed, .bim and .fam files."
+
+
 	#------------Setting-up options for argument parser -------------#
 	usage = "cophesim.py -i <path to plink files> -o <output prefix> [other options]"
 	parser = argparse.ArgumentParser(usage=usage)
