@@ -1,13 +1,23 @@
 #!/usr/bin/env vpython
 #   -*- coding: utf-8 -*-
 
+import imp
 from math import log10, sqrt, log, exp
-from plinkio import plinkfile
+import os
 from random import gauss, uniform, expovariate
+
+#----------- Importing plinkio ---------------#
+try:
+    plinkio_info = imp.find_module('plinkio')
+    from plinkio import plinkfile
+except ImportError:
+	print "Warning: plinkio not installed."
+
+#----------- Importing custom modules -----------------#
 from exceptions import *
 from parser import *
 from writer import *
-import os
+
 
 class Simpheno():
 	
