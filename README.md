@@ -8,18 +8,17 @@ Version: 1.3.1
 
 ##Requirements
 
-1. Python 2.7
-2. plinkio https://pypi.python.org/pypi/plinkio
+1. Python v2.7.10
+2. plinkio v0.9.6 https://pypi.python.org/pypi/plinkio
 3. Plink v1.7 (to run examples)
 4. R (to run examples)
 
 ## Installation
 
-Download/clone the cophesim repository. The software is ready to use. You may add the home directory of cophesim to the PATH:
+* Install prerequisites: Python, plinkio (if you were not able to install plinkio, just skip it. The ```cophesim``` will still work, but not able to handle binary (.bed, .bim, .fam) PLINK files, only .ped and .map files will be handled), R, PLINK.
+* Download or clone the ```cophesim``` repository: https://bitbucket.org/izhbannikov/cophesim. Save under some name you wish and unzip. The software is ready to use.
+* In addition, you may download the data repository: https://bitbucket.org/izhbannikov/cophesim_data. It provides some simulated data and code examples.
 
-```
-export PYTHONPATH=<cophesim home directory>:$PYTHONPATH
-```
 
 ## Input
 
