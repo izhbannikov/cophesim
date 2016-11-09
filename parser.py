@@ -4,31 +4,57 @@
 from itertools import chain
 import re
 from plinkio import plinkfile
+import os
 
 """
-class Adapter :
-	# Adapter for different types of input data
-	plinkParser = Parser()
-	msParser = Parser()
-	genomeParser = Parser()
-	
-	def parse() :
-		# Parses input file depenting on their types
-		
-	
-	def getData() :
-		# Returns genotype matrix
-		gmatrix = []
-		return gmatrix
+This code was borrowed from phenosim (phenotype simulator) written by Gunter T at al.
+http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-265 
+and modified by Ilya Zhbannikov.
 """
+
 
 class Parser() :
 
 	def __init__(self):
 		pass
 	
-
-	def parse_plink(self, fname) :
+	def parse_plink_ped(self, fname, diploid=False) :
+		matrix = []
+		positions = [[]]
+		plink_file = open(fname, 'rU')
+		lines = plink_file.readlines()
+		plink_file.close()
+		
+		for i in range(len(lines)) :
+			row = lines[i].strip('\n').split(' ')
+			row = row[6:]
+			matrix.append([])
+			for j in range(len(row)-1):
+				if diploid == False :
+					if row[j] == row[j+1] :
+						matrix[i].append(0)
+					elif row[j] != row[j+1] :
+						matrix[i].append(1)
+		
+		genotypes_all = [matrix]
+		
+		# Check for .map file
+		map_file =  os.path.splitext(fname)[0] + ".map"
+		if os.path.exists(map_file):
+			map_file_handle = open(map_file, 'rU')
+			lines = map_file_handle.readlines()
+			for i in range(len(lines)) :
+				row = lines[i].strip('\n').split('\t')
+				[positions[0].append(row[-1])]
+		else :
+			[positions[0].append(0.0) for i in range(len(matrix[0]))]
+		
+		raw_all = [matrix]
+		
+		return genotypes_all,positions,raw_all	
+		
+		
+	def parse_plink_bed(self, fname) :
 		""" For parsing Plink-line files """
 		matrix = []
 		plink_file = plinkfile.open( fname )

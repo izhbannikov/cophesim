@@ -7,6 +7,7 @@ from random import gauss, uniform, expovariate
 from exceptions import *
 from parser import *
 from writer import *
+import os
 
 class Simpheno():
 	
@@ -92,7 +93,11 @@ class Simpheno():
 		p = Parser()
 		
 		if self.inType == "plink" :
-			self.genoMatrix = p.parse_plink(fname)
+			ext = os.path.splitext(fname)[1]
+			if ext.lower() == ".ped" :
+				self.genoMatrix = p.parse_plink_ped(fname) #p.parse_plink(fname)
+			else :
+				self.genoMatrix = p.parse_plink_bed(fname)
 		elif self.inType == "ms" :
 			self.genoMatrix = p.parse_ms(fname)
 		elif self.inType == "genome" :

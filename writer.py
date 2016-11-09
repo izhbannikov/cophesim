@@ -1,6 +1,11 @@
 #!/usr/bin/env vpython
 #   -*- coding: utf-8 -*-
 
+"""
+This code was borrowed from the phenosim (phenotype simulator) source code written by Gunter T at al.
+http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-265
+"""
+
 class Writer :
 
 	def convert2emma(self, marker,positions,phenotypes,fname):
