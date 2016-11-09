@@ -13,3 +13,5 @@
 *id.txt
 *.ped
 *.map
+*.pheno
+*.geno
