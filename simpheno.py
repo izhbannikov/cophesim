@@ -43,11 +43,12 @@ class Simpheno():
 		self.alleleFreq = None
 		self.snpeff = dict()
 		self.epieff = dict()
+		self.ldeff = dict()
 		# Misc #
 		#self.h = inargs.h
 		self.alpha = inargs.alpha
 		self.epifile = inargs.epifile
-		
+		self.ldfile = inargs.ldfile
 	
 	
 	#----------------- Methods ------------------#
@@ -72,6 +73,31 @@ class Simpheno():
 		
 		self.snpeff = eff
 
+	def prepareLD(self):
+		""" Prepares a list of ld between SNPs """
+		
+		ld = dict()
+		
+		# Read cefile
+		f = open(self.ldfile)
+		lines = f.readlines()
+		f.close()
+		
+		for l in lines :
+			splits = l.split(',')
+			if len(splits) == 3 :
+				snp1 = int(splits[0].strip())
+				snp2 = int(splits[1].strip())
+				value = float(splits[2].replace('\n','').strip())
+				if snp1 not in ld :
+					ld[snp1] = dict()
+					ld[snp1][snp2] = value
+				else :
+					ld[snp1][snp2] = value
+		
+		self.ldeff = ld
+	
+	
 	def prepareEpi(self):
 		""" Prepares a list of effects from causal SNPs """
 		
@@ -174,19 +200,34 @@ class Simpheno():
 			for row in self.genoMatrix[0][0] :
 				sum_wij_ui = 0.0
 				for g,freq,j in zip(row, self.alleleFreq, range(len(row))) : #, locus_list) :
+					
 					g = float(g)
 					wij = 0.0
+					val = 0
 					if len(self.snpeff) == 0 :
 						wij = (g - 2.0*freq) / sqrt(2.0*freq*(1.0 - freq))
-						sum_wij_ui += g*wij
+						if j in self.ldeff :
+							for jj in self.ldeff[j].keys() :
+								val = g*row[jj]*self.ldeff[j][jj]*wij
+						
+						sum_wij_ui += val
 					else :
 						if j in self.snpeff :
-							sum_wij_ui += g*self.snpeff[j]
+							#print self.ldeff.keys()
+							if j in self.ldeff :
+								#print self.ldeff[j].keys()
+								for jj in self.ldeff[j].keys() :
+									val += g*row[jj]*self.ldeff[j][jj]*self.snpeff[j]
+							else :
+								val = g*self.snpeff[j]
+							sum_wij_ui += val
 					
 					# Interactions
 					if j in self.epieff :
 						for jj in self.epieff[j].keys() :
 							sum_wij_ui += g*row[jj]*self.epieff[j][jj]
+							
+					
 			
 				z = sum_wij_ui + gauss(0, 1)	
 				pr = 1/(1+exp(-z))
@@ -327,6 +368,10 @@ class Simpheno():
 		# Prepare interaction effects from provided file
 		if self.epifile != None :
 			self.prepareEpi()
+		
+		# Prepare linkage disequlibriums 
+		if self.ldfile != None :
+			self.prepareLD()
 	
 		self.prepareMatrix(path)
 		

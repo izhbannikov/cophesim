@@ -50,6 +50,10 @@ def main() :
 	parser.add_argument("-weib", action="store_true", dest="weib", default=True, required=False, help="A flag to use Weibull distribution for survival phenotype. True by default.")
 	parser.add_argument("-gomp", action="store_true", dest="gomp", default=False, required=False, help="A flag to use Gompertz distribution for survival phenotype. False by default.")
 	
+	# To simulate LD #
+	parser.add_argument("-LD", action="store", type=str, dest="ldfile", default=None, required=False, help="File with collinear SNPs. One pair per line. Format: snp1_index,snp2_index,correlation_coeff([-1,1])")
+	
+	
 	#--------- Checking the input arguments ----------#
 	args = parser.parse_args()
 	
