@@ -251,12 +251,24 @@ class Simpheno():
 				for g,freq,j in zip(row, self.alleleFreq, range(len(row))) :
 					g = float(g)
 					wij = 0.0
+					val = 0
 					if len(self.snpeff) == 0 :
 						wij = (g - 2.0*freq) / sqrt(2.0*freq*(1.0 - freq))
-						sum_wij_ui += g*wij
+						if j in self.ldeff :
+							for jj in self.ldeff[j].keys() :
+								val = g*row[jj]*self.ldeff[j][jj]*wij
+						
+						sum_wij_ui += val
 					else :
 						if j in self.snpeff :
-							sum_wij_ui += g*self.snpeff[j]
+							#print self.ldeff.keys()
+							if j in self.ldeff :
+								#print self.ldeff[j].keys()
+								for jj in self.ldeff[j].keys() :
+									val += g*row[jj]*self.ldeff[j][jj]*self.snpeff[j]
+							else :
+								val = g*self.snpeff[j]
+							sum_wij_ui += val
 							
 					# Interactions
 					if j in self.epieff :
