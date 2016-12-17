@@ -2,9 +2,9 @@
 
 Simulation tool to simulate phenotypes: continuous, dichotomous and survival for common variants from existing genotype data simulated with some other tool.
 
-Version: 1.3.1
+Version: 1.4.0
 
-© Ilya Y. Zhbannikov, 2016-10-28
+© Ilya Y. Zhbannikov, 2016-12-17
 
 ##Requirements
 
@@ -64,6 +64,8 @@ $python cophesim.py -i <path genotype files> -out <ouput prefix> [other paramete
                         phenotype. True by default.
   -gomp                 A flag to use Gompertz distribution for survival
                         phenotype. False by default.
+  -LD LDFILE            File with collinear SNPs. One pair per line. Format:
+                        snp1_index,snp2_index,correlation_coeff([-1,1])
 ```
 
 ## Examples
