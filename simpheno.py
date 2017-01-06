@@ -189,6 +189,21 @@ class Simpheno():
 	
 		self.indiv_id = ids
 
+	def makeLD(self) :
+		""" Simulate LD (multicollinearity) """
+		for k in self.ldeff.keys() :
+			for kk in self.ldeff[k].keys() :
+				#print k,kk,self.ldeff[k][kk]
+				#print len(self.genoMatrix[0][0][0])
+				for i in xrange(len(self.genoMatrix[0][0])):
+					#for j in range(len(self.genoMatrix[0][0][i])) :
+					self.genoMatrix[0][0][i][k] = self.genoMatrix[0][0][i][kk]
+					#print i
+					#print i/float(len(self.genoMatrix[0][0]))
+					#print self.ldeff[k][kk]
+					if i/float(len(self.genoMatrix[0][0])) >= self.ldeff[k][kk] :
+						break
+
 	def simDichotomousPhe(self, cov=None) :
 		"""Simulates dichotomous phenotype"""
 		
@@ -197,7 +212,12 @@ class Simpheno():
 		if cov != None:
 			pass # TODO
 		else :
+			
+			if len(self.ldeff) != 0 :
+				self.makeLD()
+			
 			for row in self.genoMatrix[0][0] :
+				
 				sum_wij_ui = 0.0
 				for g,freq,j in zip(row, self.alleleFreq, range(len(row))) : #, locus_list) :
 					
@@ -214,12 +234,13 @@ class Simpheno():
 					else :
 						if j in self.snpeff :
 							#print self.ldeff.keys()
-							if j in self.ldeff :
-								#print self.ldeff[j].keys()
-								for jj in self.ldeff[j].keys() :
-									val += g*row[jj]*self.ldeff[j][jj]*self.snpeff[j]
-							else :
-								val = g*self.snpeff[j]
+							#if j in self.ldeff :
+							#	#print self.ldeff[j].keys()
+							#	for jj in self.ldeff[j].keys() :
+							#		val += g*row[jj]*self.ldeff[j][jj]*self.snpeff[j]
+							#else :
+							#	val = g*self.snpeff[j]
+							val = g*self.snpeff[j]
 							sum_wij_ui += val
 					
 					# Interactions
@@ -246,6 +267,10 @@ class Simpheno():
 		if cov != None:
 			pass # TODO
 		else :
+		
+			if len(self.ldeff) != 0 :
+				self.makeLD()
+		
 			for row in self.genoMatrix[0][0] :
 				sum_wij_ui = 0.0
 				for g,freq,j in zip(row, self.alleleFreq, range(len(row))) :
@@ -254,20 +279,21 @@ class Simpheno():
 					val = 0
 					if len(self.snpeff) == 0 :
 						wij = (g - 2.0*freq) / sqrt(2.0*freq*(1.0 - freq))
-						if j in self.ldeff :
-							for jj in self.ldeff[j].keys() :
-								val = g*row[jj]*self.ldeff[j][jj]*wij
+						#if j in self.ldeff :
+						#	for jj in self.ldeff[j].keys() :
+						#		val = g*row[jj]*self.ldeff[j][jj]*wij
 						
 						sum_wij_ui += val
 					else :
 						if j in self.snpeff :
 							#print self.ldeff.keys()
-							if j in self.ldeff :
-								#print self.ldeff[j].keys()
-								for jj in self.ldeff[j].keys() :
-									val += g*row[jj]*self.ldeff[j][jj]*self.snpeff[j]
-							else :
-								val = g*self.snpeff[j]
+							#if j in self.ldeff :
+							#	#print self.ldeff[j].keys()
+							#	for jj in self.ldeff[j].keys() :
+							#		val += g*row[jj]*self.ldeff[j][jj]*self.snpeff[j]
+							#else :
+							#	val = g*self.snpeff[j]
+							val = g*self.snpeff[j]
 							sum_wij_ui += val
 							
 					# Interactions
@@ -300,6 +326,9 @@ class Simpheno():
 			rateC = rate parameter of the exponential distribution of C
 		"""
 		surv_trait = []
+		
+		if len(self.ldeff) != 0 :
+			self.makeLD()
 		
 		for row in self.genoMatrix[0][0]:
 			sum_wij_ui = 0.0
@@ -337,7 +366,10 @@ class Simpheno():
 			rho = shape parameter in h0()
 			rateC = rate parameter of the exponential distribution of C
 		"""
-		surv_trait = []	
+		surv_trait = []
+		
+		if len(self.ldeff) != 0 :
+			self.makeLD()	
 		
 		for row in self.genoMatrix[0][0]:
 			sum_wij_ui = 0.0

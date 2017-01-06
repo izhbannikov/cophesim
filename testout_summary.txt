@@ -7,6 +7,6 @@ Output prefix: testout
 alpha: 0.2138
 Number of SNPs: 100
 Number of individuals: 10000
-Number of cases: 8782
-Number of controls: 1218
-Average for continous phenotype: 2.94459788619
+Number of cases: 8320
+Number of controls: 1680
+Average for continous phenotype: 2.60561799881
