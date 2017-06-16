@@ -2,9 +2,9 @@
 
 Simulation tool to simulate phenotypes: continuous, dichotomous and survival for common variants from existing genotype data simulated with some other tool.
 
-Version: 1.4.0
+Version: 1.4.1
 
-© Ilya Y. Zhbannikov, 2016-12-17
+© Ilya Y. Zhbannikov, 2017-06-17
 
 ##Requirements
 

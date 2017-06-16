@@ -12,7 +12,7 @@ import traceback
 from simpheno import *
 from utils import *
 
-version = "1.1.1"
+version = "1.4.1"
 
 # Starts the simulation
 def main() :
